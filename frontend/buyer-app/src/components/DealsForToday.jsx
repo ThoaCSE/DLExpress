@@ -1,9 +1,9 @@
 import React from 'react'
 
 const DEALS = [
-  { id: 'deal1', title: 'Vegetable bundle', subtitle: 'Save €8 on fresh produce' },
-  { id: 'deal2', title: 'Breakfast box', subtitle: 'Fast delivery before 9am' },
-  { id: 'deal3', title: 'Snack pack', subtitle: 'Perfect for movie night' },
+  { id: 'deal1', title: 'Vegetable Bundle', subtitle: 'Save €8 on fresh produce', tag: 'Bundle' },
+  { id: 'deal2', title: 'Breakfast Box', subtitle: 'Fast delivery before 9 AM', tag: 'Top Seller' },
+  { id: 'deal3', title: 'Snack Pack', subtitle: 'Perfect for movie night', tag: 'Limited Time' },
 ]
 
 export default function DealsForToday() {
@@ -19,6 +19,7 @@ export default function DealsForToday() {
         {DEALS.map((deal) => (
           <div className="col-md-4" key={deal.id}>
             <div className="deal-card p-4 rounded-4 shadow-sm bg-white">
+              <span className="badge rounded-pill text-bg-danger mb-2">{deal.tag}</span>
               <h5>{deal.title}</h5>
               <p className="text-muted mb-3">{deal.subtitle}</p>
               <button className="btn btn-outline-danger btn-sm">Shop now</button>

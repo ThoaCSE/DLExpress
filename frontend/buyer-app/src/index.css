@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap');
 
 :root {
   --surface: #ffffff;
@@ -16,7 +16,7 @@
 
 body {
   margin: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Manrope', sans-serif;
   background: #f5f6f7;
   color: var(--text);
 }
@@ -85,8 +85,20 @@ select {
 }
 
 .buyer-hero h1 {
+  font-family: 'Sora', sans-serif;
   font-size: clamp(2rem, 3vw, 3.2rem);
   margin-bottom: 0.8rem;
+}
+
+.hero-ad-badge {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #8b1d2c;
+  background: #fff;
+  border: 1px dashed #dc3545;
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
 }
 
 .hero-feature {
@@ -103,6 +115,16 @@ select {
   min-height: 180px;
   border-radius: 24px;
   transition: transform 0.2s ease;
+}
+
+.promo-strip {
+  background: linear-gradient(90deg, #fff6eb 0%, #ffeef2 100%);
+  border: 1px solid #ffd4dc;
+  color: #8b1d2c;
+  border-radius: 14px;
+  padding: 0.65rem 0.9rem;
+  font-weight: 700;
+  font-size: 0.95rem;
 }
 
 .deal-card:hover {

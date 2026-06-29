@@ -3,6 +3,17 @@ import api from '../api/axios'
 import { getAuth } from '../utils/auth'
 import { SELLER_CATEGORIES } from '../utils/categories'
 
+const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp']
+
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
 export default function ListItem() {
   const auth = getAuth()
   const [store, setStore] = useState(null)
@@ -41,9 +52,31 @@ export default function ListItem() {
   }
 
   const deleteItem = async (id) => {
-    await api.delete(`/seller/foods/${id}`)
-    setMessage('Item removed')
-    fetchItems()
+    try {
+      await api.delete(`/seller/foods/${id}`)
+      setMessage('Item removed')
+      fetchItems()
+    } catch {
+      setMessage('Delete failed.')
+    }
+  }
+
+  const onEditImagePicked = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file || !editItem) return
+
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      setMessage('Only PNG, JPG, JPEG or WEBP files are supported.')
+      return
+    }
+
+    try {
+      const dataUrl = await fileToDataUrl(file)
+      setEditItem({ ...editItem, imageUrl: dataUrl })
+      setMessage('Image selected for edit.')
+    } catch {
+      setMessage('Could not read image file.')
+    }
   }
 
   return (
@@ -141,6 +174,15 @@ export default function ListItem() {
               <label className="form-label">Image URL</label>
               <input className="form-control" value={editItem.imageUrl} onChange={(e) => setEditItem({ ...editItem, imageUrl: e.target.value })} />
             </div>
+            <div className="col-md-6">
+              <label className="form-label">Upload Image (PNG/JPG/JPEG/WEBP)</label>
+              <input className="form-control" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" onChange={onEditImagePicked} />
+            </div>
+            {editItem.imageUrl && (
+              <div className="col-12">
+                <img src={editItem.imageUrl} alt="preview" width={90} height={90} style={{ objectFit: 'cover', borderRadius: 12 }} />
+              </div>
+            )}
             <div className="col-12">
               <label className="form-label">Description</label>
               <textarea className="form-control" rows="3" value={editItem.description} onChange={(e) => setEditItem({ ...editItem, description: e.target.value })} />

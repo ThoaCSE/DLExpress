@@ -1,10 +1,16 @@
 import React,{useState} from 'react'
-import {useNavigate} from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import {setAuth} from '../utils/auth'
+import { getAuth, setAuth } from '../utils/auth'
 export default function LoginPage() {
+  const auth = getAuth()
   const [form,setForm]=useState({email:'',password:''}); const [err,setErr]=useState(''); const [loading,setLoading]=useState(false)
   const nav=useNavigate()
+
+  if (auth?.token && auth.role === 'ADMIN') {
+    return <Navigate to="/" replace />
+  }
+
   const submit=async e=>{
     e.preventDefault(); setLoading(true); setErr('')
     try {
@@ -14,8 +20,8 @@ export default function LoginPage() {
       setAuth(d); nav('/')
     } catch(e){setErr(e.response?.data?.message||e.message)} finally{setLoading(false)}
   }
-  return <div className="min-vh-100 d-flex align-items-center justify-content-center bg-dark">
-    <div className="card shadow p-4" style={{minWidth:340}}>
+  return <div className="min-vh-100 d-flex align-items-center justify-content-center admin-login-page">
+    <div className="card shadow p-4 admin-login-card" style={{minWidth:360}}>
       <h5 className="text-center mb-1"><i className="bi bi-shield-lock me-2"/>Admin Login</h5>
       <p className="text-center text-muted small mb-3">localhost:5175</p>
       {err&&<div className="alert alert-danger py-2 small">{err}</div>}
@@ -24,7 +30,7 @@ export default function LoginPage() {
           <input className="form-control" type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} required/></div>
         <div className="mb-3"><label className="form-label">Password</label>
           <input className="form-control" type="password" value={form.password} onChange={e=>setForm({...form,password:e.target.value})} required/></div>
-        <button className="btn btn-dark w-100" disabled={loading}>{loading?'...':'Admin Login'}</button>
+        <button className="btn btn-dark w-100 rounded-pill" disabled={loading}>{loading?'...':'Admin Login'}</button>
       </form>
       <hr/><small className="text-muted">Default: admin@dlexpress.com / Admin@123</small>
     </div>

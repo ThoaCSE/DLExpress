@@ -9,17 +9,28 @@ import StoresPage from './pages/StoresPage'
 import OrdersPage from './pages/OrdersPage'
 import DeletionRequestsPage from './pages/DeletionRequestsPage'
 import DbViewerPage from './pages/DbViewerPage'
-function Guard({children}){ return getAuth()?children:<Navigate to="/login"/> }
+
+function Guard({ children }) {
+  return getAuth() ? children : <Navigate to="/login" replace />
+}
+
+function PublicRoute({ children }) {
+  return getAuth() ? <Navigate to="/" replace /> : children
+}
+
 export default function App() {
-  return <Routes>
-    <Route path="/login" element={<LoginPage/>}/>
-    <Route path="/" element={<Layout/>}>
-      <Route index element={<Guard><DashboardPage/></Guard>}/>
-      <Route path="users" element={<Guard><UsersPage/></Guard>}/>
-      <Route path="stores" element={<Guard><StoresPage/></Guard>}/>
-      <Route path="orders" element={<Guard><OrdersPage/></Guard>}/>
-      <Route path="deletions" element={<Guard><DeletionRequestsPage/></Guard>}/>
-      <Route path="db" element={<Guard><DbViewerPage/></Guard>}/>
-    </Route>
-  </Routes>
+  return (
+    <Routes>
+      <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+      <Route path="/" element={<Guard><Layout /></Guard>}>
+        <Route index element={<DashboardPage />} />
+        <Route path="users" element={<UsersPage />} />
+        <Route path="stores" element={<StoresPage />} />
+        <Route path="orders" element={<OrdersPage />} />
+        <Route path="deletions" element={<DeletionRequestsPage />} />
+        <Route path="db" element={<DbViewerPage />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
+  )
 }

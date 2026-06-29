@@ -1,6 +1,14 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const Menubar = ({ toggleSidebar, shopId, onLogout }) => {
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    onLogout()
+    navigate('/login')
+  }
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom">
       <div className="container-fluid">
@@ -21,7 +29,7 @@ const Menubar = ({ toggleSidebar, shopId, onLogout }) => {
               <button
                 className="btn btn-outline-secondary btn-sm"
                 type="button"
-                onClick={onLogout}
+                onClick={handleLogout}
               >
                 <i className="bi bi-box-arrow-right me-1" /> Logout
               </button>

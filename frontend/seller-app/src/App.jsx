@@ -10,16 +10,17 @@ import Orders from './pages/Orders'
 
 function Guard({ children }) {
   const auth = getAuth()
-  return auth?.token && auth.role === 'SELLER' ? children : <Navigate to="/login" />
+  return auth?.token && auth.role === 'SELLER' ? children : <Navigate to="/login" replace />
 }
 
-export default function App() {
+function PublicRoute({ children }) {
+  const auth = getAuth()
+  return auth?.token && auth.role === 'SELLER' ? <Navigate to="/list" replace /> : children
+}
+
+function SellerShell() {
   const [sidebarVisible, setSidebarVisible] = useState(true)
   const auth = getAuth()
-
-  if (!auth?.token || auth.role !== 'SELLER') {
-    return <SignIn />
-  }
 
   return (
     <div className="d-flex" id="wrapper">
@@ -27,20 +28,29 @@ export default function App() {
       <div id="page-content-wrapper" className="w-100">
         <Menubar
           toggleSidebar={() => setSidebarVisible((visible) => !visible)}
-          shopId={auth.fullName || auth.email || auth.userId}
+          shopId={auth?.fullName || auth?.email || auth?.userId}
           onLogout={logout}
         />
         <div className="container-fluid px-4 py-4">
           <Routes>
-            <Route path="/add" element={<Guard><AddItem /></Guard>} />
-            <Route path="/list" element={<Guard><ListItem /></Guard>} />
-            <Route path="/orders" element={<Guard><Orders /></Guard>} />
-            <Route path="/login" element={<Navigate to="/" />} />
-            <Route path="/" element={<Navigate to="/list" />} />
-            <Route path="*" element={<Navigate to="/list" />} />
+            <Route path="/add" element={<AddItem />} />
+            <Route path="/list" element={<ListItem />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/" element={<Navigate to="/list" replace />} />
+            <Route path="*" element={<Navigate to="/list" replace />} />
           </Routes>
         </div>
       </div>
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/login" element={<PublicRoute><SignIn /></PublicRoute>} />
+      <Route path="/*" element={<Guard><SellerShell /></Guard>} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
   )
 }

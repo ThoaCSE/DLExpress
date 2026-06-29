@@ -50,3 +50,13 @@ select {
 .btn {
 	border-radius: 7px;
 }
+
+.admin-login-page {
+	background:
+		linear-gradient(135deg, #111827 0%, #0f172a 50%, #1f2937 100%);
+}
+
+.admin-login-card {
+	border-radius: 18px;
+	border: 1px solid #dfe3ea;
+}

@@ -1,13 +1,18 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Navigate } from 'react-router-dom'
 import axios from 'axios'
-import { setAuth } from '../utils/auth'
+import { getAuth, setAuth } from '../utils/auth'
 
 export default function SignIn() {
+  const auth = getAuth()
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+
+  if (auth?.token && auth.role === 'SELLER') {
+    return <Navigate to="/list" replace />
+  }
 
   const submit = async (e) => {
     e.preventDefault()
@@ -33,10 +38,10 @@ export default function SignIn() {
   }
 
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
-      <div className="card shadow p-4" style={{ width: 380 }}>
-        <h3 className="text-center mb-3">DLExpress Seller Login</h3>
-        <p className="text-muted text-center small mb-4">Enter your seller credentials to manage inventory and orders.</p>
+    <div className="seller-auth min-vh-100 d-flex justify-content-center align-items-center px-3">
+      <div className="card shadow seller-auth-card p-4" style={{ width: 410 }}>
+        <h3 className="text-center mb-2">DLExpress Seller Login</h3>
+        <p className="text-muted text-center small mb-4">Manage products, bundles, and orders from one dashboard.</p>
 
         {error && <div className="alert alert-danger py-2 small">{error}</div>}
 
@@ -61,7 +66,7 @@ export default function SignIn() {
               required
             />
           </div>
-          <button className="btn btn-danger w-100" disabled={loading}>
+          <button className="btn btn-danger w-100 rounded-pill" disabled={loading}>
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>

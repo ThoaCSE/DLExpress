@@ -3,12 +3,24 @@ import api from '../api/axios'
 import { getAuth } from '../utils/auth'
 import { SELLER_CATEGORIES } from '../utils/categories'
 
+const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp']
+
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
 export default function AddItem() {
   const auth = getAuth()
   const [store, setStore] = useState(null)
   const [form, setForm] = useState({ name: '', description: '', price: '', category: '', imageUrl: '' })
   const [message, setMessage] = useState('')
   const [latestItems, setLatestItems] = useState([])
+  const [uploadingImage, setUploadingImage] = useState(false)
 
   useEffect(() => {
     if (!auth?.userId) return
@@ -54,6 +66,37 @@ export default function AddItem() {
     }
   }
 
+  const onImagePicked = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      setMessage('Only PNG, JPG, JPEG or WEBP files are supported.')
+      return
+    }
+
+    try {
+      setUploadingImage(true)
+      const dataUrl = await fileToDataUrl(file)
+      setForm((prev) => ({ ...prev, imageUrl: dataUrl }))
+      setMessage('Image selected successfully.')
+    } catch {
+      setMessage('Failed to read image file.')
+    } finally {
+      setUploadingImage(false)
+    }
+  }
+
+  const removeItem = async (id) => {
+    try {
+      await api.delete(`/seller/foods/${id}`)
+      setMessage('Item removed successfully.')
+      fetchLatest()
+    } catch {
+      setMessage('Delete failed.')
+    }
+  }
+
   return (
     <div className="row g-4">
       <div className="col-lg-5">
@@ -85,6 +128,16 @@ export default function AddItem() {
               <label className="form-label">Image URL</label>
               <input className="form-control" value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} />
             </div>
+            <div className="mb-3">
+              <label className="form-label">Upload Image (PNG/JPG/JPEG/WEBP)</label>
+              <input className="form-control" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" onChange={onImagePicked} />
+              {uploadingImage && <small className="text-muted">Uploading image...</small>}
+            </div>
+            {form.imageUrl && (
+              <div className="mb-3">
+                <img src={form.imageUrl} alt="preview" width={90} height={90} style={{ objectFit: 'cover', borderRadius: 12 }} />
+              </div>
+            )}
             <button className="btn btn-danger w-100" type="submit">Save Item</button>
           </form>
         </div>
@@ -115,6 +168,9 @@ export default function AddItem() {
                     <span className="badge bg-secondary me-2">{item.category}</span>
                     <strong className="text-danger">€{item.price}</strong>
                   </div>
+                  <button className="btn btn-outline-danger btn-sm" onClick={() => removeItem(item.id)}>
+                    Delete
+                  </button>
                 </div>
               </div>
             )) : (

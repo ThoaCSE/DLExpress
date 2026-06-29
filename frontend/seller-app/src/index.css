@@ -109,3 +109,15 @@ body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
 .bg-light {
   background-color: #ffffff !important;
 }
+
+.seller-auth {
+  background:
+    radial-gradient(circle at 10% 20%, rgba(220, 53, 69, 0.12) 0%, transparent 35%),
+    radial-gradient(circle at 90% 10%, rgba(13, 110, 253, 0.12) 0%, transparent 30%),
+    #f8f9fa;
+}
+
+.seller-auth-card {
+  border-radius: 20px;
+  border: 1px solid #eceef1;
+}
