@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+	--app-font: 'Poppins', sans-serif;
+	--app-bg: #f8f9fa;
+	--app-text: #1f2937;
+	--app-accent: #dc3545;
+}
+
+html,
+body,
+#root {
+	min-height: 100%;
+}
+
+body {
+	margin: 0;
+	background: var(--app-bg);
+	color: var(--app-text);
+	font-family: var(--app-font);
+}
+
+body,
+button,
+input,
+textarea,
+select {
+	font-family: var(--app-font);
+}
+
+.app-bar {
+	background: var(--app-accent);
+	color: #fff;
+	font-size: 0.75rem;
+	padding: 6px 16px;
+	text-align: center;
+}
+
+.app-bar span {
+	background: rgba(255, 255, 255, 0.25);
+	border-radius: 4px;
+	margin: 0 4px;
+	padding: 1px 8px;
+}
+
+.card {
+	border-radius: 10px;
+}
+
+.btn {
+	border-radius: 7px;
+}

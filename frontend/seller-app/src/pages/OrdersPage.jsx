@@ -1,0 +1,32 @@
+import React,{useEffect,useState} from 'react'
+import api from '../api/axios'
+const STATUSES=['PENDING','PREPARING','READY','OUT_FOR_DELIVERY','DELIVERED','CANCELLED']
+const PM_ICON={CASH:'💵',CARD:'💳',QR:'📱'}
+export default function OrdersPage() {
+  const [orders,setOrders]=useState([]); const [loading,setLoading]=useState(true)
+  useEffect(()=>{ api.get('/seller/orders').then(r=>setOrders(r.data?.data||[])).finally(()=>setLoading(false)) },[])
+  const updateStatus=async(id,status)=>{
+    await api.put(`/seller/orders/${id}/status?status=${status}`)
+    setOrders(orders.map(o=>o.id===id?{...o,status}:o))
+  }
+  if(loading) return <div className="text-center py-5"><div className="spinner-border text-success"/></div>
+  return <div>
+    <h4 className="mb-4">Incoming Orders ({orders.length})</h4>
+    {!orders.length?<p className="text-muted">No orders yet.</p>:orders.map(o=>(
+      <div className="card shadow-sm mb-3" key={o.id}>
+        <div className="card-body">
+          <div className="d-flex justify-content-between mb-2">
+            <strong>#{o.id?.substring(0,8)}</strong>
+            <span>{PM_ICON[o.paymentMethod]||''} {o.paymentMethod} — <span className={`badge ${o.paymentStatus==='PAID'?'bg-success':'bg-warning text-dark'}`}>{o.paymentStatus}</span></span>
+          </div>
+          <p className="small text-muted mb-1">Rs.{o.totalAmount} · {o.deliveryAddress}</p>
+          <p className="small mb-2">{o.items?.map(i=>`${i.name}×${i.quantity}`).join(', ')}</p>
+          <div className="d-flex flex-wrap gap-1">
+            {STATUSES.map(s=><button key={s} className={`btn btn-sm ${o.status===s?'btn-success':'btn-outline-secondary'}`}
+              onClick={()=>updateStatus(o.id,s)} disabled={o.status===s}>{s}</button>)}
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+}
