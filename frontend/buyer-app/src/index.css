@@ -44,6 +44,46 @@ select {
   border-radius: 28px;
 }
 
+.login-screen {
+  background: linear-gradient(180deg, #fdf2f2 0%, #f5f6f7 100%);
+}
+
+.login-panel {
+  width: min(100%, 440px);
+  border-radius: 28px;
+  background: white;
+}
+
+.login-header {
+  background: linear-gradient(135deg, #dc3545 0%, #e83e5b 100%);
+  box-shadow: inset 0 -6px 24px rgba(0, 0, 0, 0.08);
+}
+
+.login-body {
+  background: #fff;
+}
+
+.login-header .display-5,
+.login-header .display-6 {
+  font-weight: 700;
+}
+
+.login-header .small {
+  letter-spacing: 0.02em;
+}
+
+.login-body .form-control {
+  border-radius: 10px;
+}
+
+.login-body .btn {
+  border-radius: 999px;
+}
+
+.login-body .alert {
+  border-radius: 16px;
+}
+
 .buyer-hero h1 {
   font-size: clamp(2rem, 3vw, 3.2rem);
   margin-bottom: 0.8rem;
