@@ -26,7 +26,7 @@ export default function LoginPage() {
           <input className="form-control" type="password" value={form.password} onChange={e=>setForm({...form,password:e.target.value})} required/></div>
         <button className="btn btn-dark w-100" disabled={loading}>{loading?'...':'Admin Login'}</button>
       </form>
-      <hr/><small className="text-muted">Default: admin@foodie.com / Admin@123</small>
+      <hr/><small className="text-muted">Default: admin@dlexpress.com / Admin@123</small>
     </div>
   </div>
 }

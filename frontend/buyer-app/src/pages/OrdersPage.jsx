@@ -13,7 +13,7 @@ export default function OrdersPage() {
         <div className="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
           <div>
             <strong>#{o.id?.substring(0,8)}</strong>
-            <div className="text-muted small">{o.items?.length} item(s) · Rs.{o.totalAmount} · {o.paymentMethod}</div>
+            <div className="text-muted small">{o.items?.length} item(s) · €{o.totalAmount} · {o.paymentMethod}</div>
             {o.estimatedDelivery&&<div className="text-success small">ETA: {o.estimatedDelivery}</div>}
           </div>
           <div className="d-flex gap-2 align-items-center">

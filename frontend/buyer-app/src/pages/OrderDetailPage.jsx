@@ -19,11 +19,11 @@ export default function OrderDetailPage() {
         <div className="d-flex justify-content-between mb-2"><strong>Status</strong><span className="badge bg-danger fs-6">{tracking?.status||order.status}</span></div>
         {(tracking?.estimatedDelivery||order.estimatedDelivery)&&<div className="d-flex justify-content-between mb-2"><strong>ETA</strong><span className="text-success">{tracking?.estimatedDelivery||order.estimatedDelivery}</span></div>}
         <div className="d-flex justify-content-between mb-2"><strong>Payment</strong><span>{order.paymentMethod} — {order.paymentStatus}</span></div>
-        <div className="d-flex justify-content-between"><strong>Total</strong><span>Rs.{order.totalAmount}</span></div>
+        <div className="d-flex justify-content-between"><strong>Total</strong><span>€{order.totalAmount}</span></div>
       </div></div>
       <div className="card shadow-sm"><div className="card-body">
         <h6>Items</h6>
-        {order.items?.map((it,i)=><div key={i} className="d-flex justify-content-between small border-bottom py-1"><span>{it.name} ×{it.quantity}</span><span>Rs.{(it.price*it.quantity).toFixed(0)}</span></div>)}
+        {order.items?.map((it,i)=><div key={i} className="d-flex justify-content-between small border-bottom py-1"><span>{it.name} ×{it.quantity}</span><span>€{(it.price*it.quantity).toFixed(0)}</span></div>)}
       </div></div>
       {tracking&&<div className="card shadow-sm mt-3 border-success"><div className="card-body">
         <h6 className="text-success"><i className="bi bi-geo-alt-fill me-1"/>Live Tracking</h6>

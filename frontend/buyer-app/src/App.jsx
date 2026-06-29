@@ -12,22 +12,22 @@ import NotificationsPage from './pages/NotificationsPage'
 import ProfilePage from './pages/ProfilePage'
 
 function Guard({ children }) {
-  return getAuth() ? children : <Navigate to="/login"/>
+  return getAuth() ? children : <Navigate to="/login" />
 }
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage/>}/>
-      <Route path="/register" element={<RegisterPage/>}/>
-      <Route path="/" element={<Layout/>}>
-        <Route index element={<Navigate to="/stores"/>}/>
-        <Route path="stores" element={<StoresPage/>}/>
-        <Route path="stores/:id" element={<StorePage/>}/>
-        <Route path="orders" element={<Guard><OrdersPage/></Guard>}/>
-        <Route path="orders/:id" element={<Guard><OrderDetailPage/></Guard>}/>
-        <Route path="notifications" element={<Guard><NotificationsPage/></Guard>}/>
-        <Route path="profile" element={<Guard><ProfilePage/></Guard>}/>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Navigate to="/stores" />} />
+        <Route path="stores" element={<StoresPage />} />
+        <Route path="stores/:id" element={<Guard><StorePage /></Guard>} />
+        <Route path="orders" element={<Guard><OrdersPage /></Guard>} />
+        <Route path="orders/:id" element={<Guard><OrderDetailPage /></Guard>} />
+        <Route path="notifications" element={<Guard><NotificationsPage /></Guard>} />
+        <Route path="profile" element={<Guard><ProfilePage /></Guard>} />
       </Route>
     </Routes>
   )

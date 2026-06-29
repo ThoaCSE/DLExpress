@@ -60,7 +60,7 @@ export default function StorePage() {
             <div className="card-body">
               <h6>{f.name}</h6><p className="text-muted small mb-2">{f.description}</p>
               <div className="d-flex justify-content-between">
-                <strong className="text-danger">Rs.{f.price}</strong>
+                <strong className="text-danger">€{f.price}</strong>
                 <button className="btn btn-danger btn-sm" onClick={()=>add(f)}>+ Add</button>
               </div>
             </div>
@@ -73,11 +73,11 @@ export default function StorePage() {
             <h5>Cart</h5>
             {!cart.length ? <p className="text-muted small">Add items</p> : <>
               {cart.map(i=><div className="d-flex justify-content-between small mb-1" key={i.foodItemId}>
-                <span>{i.name} ×{i.quantity}</span><span>Rs.{(i.price*i.quantity).toFixed(0)}</span>
+                <span>{i.name} ×{i.quantity}</span><span>€{(i.price*i.quantity).toFixed(0)}</span>
               </div>)}
               <hr/>
               <div className="fw-bold d-flex justify-content-between mb-3">
-                <span>Total</span><span className="text-danger">Rs.{total.toFixed(0)}</span>
+                <span>Total</span><span className="text-danger">€{total.toFixed(0)}</span>
               </div>
               <div className="mb-3">
                 <label className="form-label fw-semibold">Payment Method</label>

@@ -19,7 +19,7 @@ export default function OrdersPage() {
             <strong>#{o.id?.substring(0,8)}</strong>
             <span>{PM_ICON[o.paymentMethod]||''} {o.paymentMethod} — <span className={`badge ${o.paymentStatus==='PAID'?'bg-success':'bg-warning text-dark'}`}>{o.paymentStatus}</span></span>
           </div>
-          <p className="small text-muted mb-1">Rs.{o.totalAmount} · {o.deliveryAddress}</p>
+          <p className="small text-muted mb-1">€{o.totalAmount} · {o.deliveryAddress}</p>
           <p className="small mb-2">{o.items?.map(i=>`${i.name}×${i.quantity}`).join(', ')}</p>
           <div className="d-flex flex-wrap gap-1">
             {STATUSES.map(s=><button key={s} className={`btn btn-sm ${o.status===s?'btn-success':'btn-outline-secondary'}`}

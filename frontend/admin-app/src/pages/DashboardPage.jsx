@@ -10,7 +10,7 @@ export default function DashboardPage() {
   ]
   return <div>
     <h4 className="mb-1"><i className="bi bi-shield-check me-2 text-danger"/>Admin Dashboard</h4>
-    <p className="text-muted mb-4">Foodie v5.2 — System Administrator</p>
+    <p className="text-muted mb-4">DLExpress v5.2 — System Administrator</p>
     <div className="row g-3">
       {cards.map(c=><div className="col-md-4" key={c.to}>
         <div className="card shadow-sm h-100 text-center p-3">

@@ -31,7 +31,7 @@ export default function DbViewerPage() {
 
   return <div>
     <h4 className="mb-1"><i className="bi bi-database me-2"/>Database Viewer</h4>
-    <p className="text-muted small mb-3">MongoDB → foodie_db</p>
+    <p className="text-muted small mb-3">MongoDB → DLExpress DB</p>
 
     <div className="d-flex gap-2 mb-3 flex-wrap">
       {COLLECTIONS.map(c=><button key={c.key} className={`btn btn-sm ${active===c.key?`btn-${c.color}`:`btn-outline-${c.color}`}`} onClick={()=>load(c.key)}>

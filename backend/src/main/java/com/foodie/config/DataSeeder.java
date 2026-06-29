@@ -15,15 +15,15 @@ public class DataSeeder implements CommandLineRunner {
     }
     @Override
     public void run(String... args) {
-        if (userRepo.findByEmail("admin@foodie.com").isEmpty()) {
+        if (userRepo.findByEmail("admin@dlexpress.com").isEmpty()) {
             User admin = new User();
             admin.setFullName("System Admin");
-            admin.setEmail("admin@foodie.com");
+            admin.setEmail("admin@dlexpress.com");
             admin.setPassword(encoder.encode("Admin@123"));
             admin.setRole(UserRole.ADMIN);
             admin.setActive(true);
             userRepo.save(admin);
-            System.out.println("[Foodie] Admin account seeded: admin@foodie.com / Admin@123");
+            System.out.println("[DLExpress] Admin account seeded: admin@dlexpress.com / Admin@123");
         }
     }
 }

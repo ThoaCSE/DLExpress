@@ -1,23 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-	--app-font: 'Poppins', sans-serif;
-	--app-bg: #f8f9fa;
-	--app-text: #1f2937;
-	--app-accent: #dc3545;
+  --app-font: 'Poppins', sans-serif;
+  --app-bg: #f8f9fa;
+  --app-text: #1f2937;
+  --app-accent: #dc3545;
 }
 
 html,
 body,
 #root {
-	min-height: 100%;
+  min-height: 100%;
 }
 
 body {
-	margin: 0;
-	background: var(--app-bg);
-	color: var(--app-text);
-	font-family: var(--app-font);
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--app-font);
+  background: var(--app-bg);
+  color: var(--app-text);
 }
 
 body,
@@ -25,28 +26,86 @@ button,
 input,
 textarea,
 select {
-	font-family: var(--app-font);
+  font-family: var(--app-font);
 }
 
-.app-bar {
-	background: var(--app-accent);
-	color: #fff;
-	font-size: 0.75rem;
-	padding: 6px 16px;
-	text-align: center;
+#wrapper {
+  overflow-x: hidden;
 }
 
-.app-bar span {
-	background: rgba(255, 255, 255, 0.25);
-	border-radius: 4px;
-	margin: 0 4px;
-	padding: 1px 8px;
+#sidebar-wrapper {
+  min-height: 100vh;
+  margin-left: -15rem;
+  transition: margin 0.25s ease-out;
+}
+
+#sidebar-wrapper .sidebar-heading {
+  padding: 0.875rem 1.25rem;
+  font-size: 1.2rem;
+}
+
+#sidebar-wrapper .list-group {
+  width: 15rem;
+}
+
+#page-content-wrapper {
+  min-width: 100vw;
+}
+
+body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
+  margin-left: 0;
+}
+
+@media (min-width: 768px) {
+  #sidebar-wrapper {
+    margin-left: 0;
+  }
+
+  #page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
+
+  body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
+    margin-left: -15rem;
+  }
+}
+
+.sidebar-heading {
+  background: #fff;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.sidebar .list-group-item {
+  border: none;
+  border-radius: 0;
+}
+
+.sidebar .list-group-item:hover {
+  background: rgba(220, 53, 69, 0.08);
+}
+
+.sidebar .list-group-item.active {
+  background: #dc3545;
+  color: #fff;
+}
+
+.navbar-light .navbar-nav .nav-link {
+  color: #495057;
+}
+
+.navbar-light .navbar-nav .nav-link:hover {
+  color: #dc3545;
 }
 
 .card {
-	border-radius: 10px;
+  border-radius: 16px;
 }
 
 .btn {
-	border-radius: 7px;
+  border-radius: 10px;
+}
+
+.bg-light {
+  background-color: #ffffff !important;
 }

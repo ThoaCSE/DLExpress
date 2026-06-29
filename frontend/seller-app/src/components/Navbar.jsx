@@ -7,7 +7,7 @@ export default function Navbar() {
   useEffect(()=>{ if(!auth?.userId) return; api.get(`/notifications/${auth.userId}/unread-count`).then(r=>setUnread(r.data?.data?.count||0)).catch(()=>{}) },[auth?.userId])
   return <nav className="navbar navbar-expand-lg navbar-dark bg-success">
     <div className="container">
-      <Link className="navbar-brand fw-bold" to="/">🏪 Foodie Seller</Link>
+      <Link className="navbar-brand fw-bold" to="/">🏪 DLExpress Seller</Link>
       <div className="d-flex align-items-center gap-3 ms-auto">
         {auth&&<><Link className="nav-link text-white" to="/">Dashboard</Link>
           <Link className="nav-link text-white" to="/orders">Orders</Link>

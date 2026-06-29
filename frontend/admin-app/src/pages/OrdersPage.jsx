@@ -14,7 +14,7 @@ export default function OrdersPage() {
         <strong>#{o.id?.substring(0,8)}</strong>
         <span>{PM[o.paymentMethod]||''} {o.paymentMethod} — <span className={`badge ${o.paymentStatus==='PAID'?'bg-success':'bg-warning text-dark'}`}>{o.paymentStatus}</span></span>
       </div>
-      <div className="small text-muted mb-2">Buyer: {o.buyerId?.substring(0,10)} · Rs.{o.totalAmount} · {o.deliveryAddress}</div>
+      <div className="small text-muted mb-2">Buyer: {o.buyerId?.substring(0,10)} · €{o.totalAmount} · {o.deliveryAddress}</div>
       <div className="d-flex flex-wrap gap-1">
         {STATUSES.map(s=><button key={s} className={`btn btn-sm ${o.status===s?'btn-dark':'btn-outline-secondary'}`} onClick={()=>upd(o.id,s)} disabled={o.status===s}>{s}</button>)}
       </div>

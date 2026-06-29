@@ -1,33 +1,75 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { getAuth, logout } from '../utils/auth'
-import api from '../api/axios'
 
 export default function Navbar() {
-  const auth = getAuth(); const nav = useNavigate()
-  const [unread, setUnread] = useState(0)
-  useEffect(() => {
-    if (!auth?.userId) return
-    api.get(`/notifications/${auth.userId}/unread-count`).then(r=>setUnread(r.data?.data?.count||0)).catch(()=>{})
-  }, [auth?.userId])
+  const auth = getAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-danger">
-      <div className="container">
-        <Link className="navbar-brand fw-bold" to="/stores">🍔 Foodie</Link>
-        <div className="d-flex align-items-center gap-3 ms-auto">
-          <Link className="nav-link text-white" to="/stores"><i className="bi bi-shop me-1"/>Stores</Link>
-          {auth && <Link className="nav-link text-white" to="/orders"><i className="bi bi-bag me-1"/>Orders</Link>}
-          {auth && <Link className="nav-link text-white position-relative" to="/notifications">
-            <i className="bi bi-bell"/>
-            {unread>0&&<span className="position-absolute top-0 start-100 translate-middle badge bg-warning text-dark rounded-pill" style={{fontSize:'0.6rem'}}>{unread}</span>}
-          </Link>}
-          {auth ? <>
-            <Link className="nav-link text-white" to="/profile"><i className="bi bi-person-circle me-1"/>{auth.fullName}</Link>
-            <button className="btn btn-outline-light btn-sm" onClick={()=>{logout();nav('/login')}}>Logout</button>
-          </> : <>
-            <Link className="btn btn-outline-light btn-sm" to="/login">Login</Link>
-            <Link className="btn btn-light btn-sm" to="/register">Register</Link>
-          </>}
+    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm buyer-navbar">
+      <div className="container-fluid px-4">
+        <Link className="navbar-brand fw-bold text-danger" to="/stores">
+          DLExpress
+        </Link>
+
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#buyerNav"
+          aria-controls="buyerNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon" />
+        </button>
+
+        <div className="collapse navbar-collapse" id="buyerNav">
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <Link className="nav-link" to="/stores">
+                Stores
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/orders">
+                Orders
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/notifications">
+                Notifications
+              </Link>
+            </li>
+          </ul>
+
+          <div className="d-flex align-items-center gap-2">
+            {auth ? (
+              <>
+                <Link className="btn btn-outline-danger btn-sm" to="/profile">
+                  {auth.fullName || auth.email}
+                </Link>
+                <button className="btn btn-danger btn-sm" onClick={handleLogout}>
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link className="btn btn-outline-danger btn-sm" to="/login">
+                  Login
+                </Link>
+                <Link className="btn btn-danger btn-sm" to="/register">
+                  Register
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </nav>

@@ -52,7 +52,7 @@ export default function DashboardPage() {
         <h5>Add Menu Item</h5>
         <form onSubmit={addFood}>
           <div className="row g-2">
-            {[['name','Name',6],['price','Price (Rs.)',6],['description','Description',12],['category','Category',6],['imageUrl','Image URL',6]].map(([k,l,c])=>(
+            {[['name','Name',6],['price','Price (€)',6],['description','Description',12],['category','Category',6],['imageUrl','Image URL',6]].map(([k,l,c])=>(
               <div className={`col-md-${c}`} key={k}><label className="form-label">{l}</label>
                 <input className="form-control" type={k==='price'?'number':'text'} step="0.01" value={foodForm[k]}
                   onChange={e=>setFoodForm({...foodForm,[k]:e.target.value})} required={['name','price'].includes(k)}/></div>
@@ -68,7 +68,7 @@ export default function DashboardPage() {
           <div className="card-body">
             <h6>{f.name}</h6><p className="text-muted small mb-1">{f.description}</p>
             <div className="d-flex justify-content-between align-items-center">
-              <strong className="text-success">Rs.{f.price}</strong>
+                <strong className="text-success">€{f.price}</strong>
               <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteFood(f.id)}>Delete</button>
             </div>
           </div>
