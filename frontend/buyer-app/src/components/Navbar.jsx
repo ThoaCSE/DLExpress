@@ -1,10 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { getAuth, logout } from '../utils/auth'
+import { getCartItemCount } from '../utils/cart'
 
 export default function Navbar() {
   const auth = getAuth()
   const navigate = useNavigate()
+  const [cartCount, setCartCount] = useState(getCartItemCount())
+
+  useEffect(() => {
+    const refresh = () => setCartCount(getCartItemCount())
+    window.addEventListener('dlexpress-cart-changed', refresh)
+    window.addEventListener('dlexpress-auth-changed', refresh)
+    return () => {
+      window.removeEventListener('dlexpress-cart-changed', refresh)
+      window.removeEventListener('dlexpress-auth-changed', refresh)
+    }
+  }, [])
 
   const handleLogout = () => {
     logout()
@@ -45,6 +57,11 @@ export default function Navbar() {
             <li className="nav-item">
               <Link className="nav-link" to="/notifications">
                 Notifications
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/cart">
+                Cart {cartCount > 0 && <span className="badge bg-danger ms-1">{cartCount}</span>}
               </Link>
             </li>
           </ul>

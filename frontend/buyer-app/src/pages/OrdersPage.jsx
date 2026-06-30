@@ -1,10 +1,43 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Client } from '@stomp/stompjs'
+import SockJS from 'sockjs-client/dist/sockjs'
 import api from '../api/axios'
 const SC = {PENDING:'secondary',PAID:'info',PREPARING:'warning',OUT_FOR_DELIVERY:'primary',DELIVERED:'success',CANCELLED:'danger'}
 export default function OrdersPage() {
   const [orders,setOrders]=useState([]); const [loading,setLoading]=useState(true)
   useEffect(()=>{ api.get('/buyer/orders').then(r=>setOrders(r.data?.data||[])).finally(()=>setLoading(false)) },[])
+
+  useEffect(() => {
+    const client = new Client({
+      webSocketFactory: () => new SockJS('/ws'),
+      reconnectDelay: 3000,
+    })
+
+    client.onConnect = () => {
+      client.subscribe('/topic/orders', (frame) => {
+        try {
+          const payload = JSON.parse(frame.body)
+          const incoming = payload?.order || payload
+          if (!incoming?.id) return
+
+          setOrders((prev) => {
+            const idx = prev.findIndex((o) => o.id === incoming.id)
+            if (idx === -1) return prev
+            const copy = [...prev]
+            copy[idx] = { ...copy[idx], ...incoming }
+            return copy
+          })
+        } catch {
+          // ignore
+        }
+      })
+    }
+
+    client.activate()
+    return () => client.deactivate()
+  }, [])
+
   if(loading) return <div className="text-center py-5"><div className="spinner-border text-danger"/></div>
   return <div>
     <h4 className="mb-4">My Orders</h4>

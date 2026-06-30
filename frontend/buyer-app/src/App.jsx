@@ -6,6 +6,8 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import StoresPage from './pages/StoresPage'
 import StorePage from './pages/StorePage'
+import CartPage from './pages/CartPage'
+import CheckoutPage from './pages/CheckoutPage'
 import OrdersPage from './pages/OrdersPage'
 import OrderDetailPage from './pages/OrderDetailPage'
 import NotificationsPage from './pages/NotificationsPage'
@@ -28,6 +30,8 @@ export default function App() {
         <Route index element={<Navigate to="/stores" replace />} />
         <Route path="stores" element={<StoresPage />} />
         <Route path="stores/:id" element={<StorePage />} />
+        <Route path="cart" element={<CartPage />} />
+        <Route path="checkout" element={<CheckoutPage />} />
         <Route path="orders" element={<OrdersPage />} />
         <Route path="orders/:id" element={<OrderDetailPage />} />
         <Route path="notifications" element={<NotificationsPage />} />

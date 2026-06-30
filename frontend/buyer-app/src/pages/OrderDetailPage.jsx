@@ -1,14 +1,30 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import api from '../api/axios'
-import SockJS from 'sockjs-client'
+import SockJS from 'sockjs-client/dist/sockjs'
 import { Client } from '@stomp/stompjs'
 
 export default function OrderDetailPage() {
   const { id }=useParams(); const [order,setOrder]=useState(null); const [tracking,setTracking]=useState(null)
   useEffect(()=>{
     api.get(`/buyer/orders/${id}`).then(r=>setOrder(r.data?.data)).catch(()=>{})
-    const c=new Client({ webSocketFactory:()=>new SockJS('/ws'), onConnect:()=>{ c.subscribe(`/topic/tracking/${id}`,m=>setTracking(JSON.parse(m.body))) } })
+    const c=new Client({
+      webSocketFactory:()=>new SockJS('/ws'),
+      reconnectDelay: 3000,
+      onConnect:()=>{
+        c.subscribe(`/topic/tracking/${id}`,m=>setTracking(JSON.parse(m.body)))
+        c.subscribe(`/topic/orders/${id}`, (m) => {
+          try {
+            const payload = JSON.parse(m.body)
+            const incoming = payload?.order || payload
+            if (!incoming?.id) return
+            setOrder((prev) => ({ ...prev, ...incoming }))
+          } catch {
+            // ignore
+          }
+        })
+      },
+    })
     c.activate(); return ()=>c.deactivate()
   },[id])
   if(!order) return <div className="text-center py-5"><div className="spinner-border text-danger"/></div>
