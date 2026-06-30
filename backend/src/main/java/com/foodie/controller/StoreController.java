@@ -1,20 +1,59 @@
 package com.foodie.controller;
 import com.foodie.dto.ApiResponse;
+import com.foodie.entity.UserRole;
 import com.foodie.entity.Store;
+import com.foodie.repository.FoodItemRepository;
 import com.foodie.repository.StoreRepository;
+import com.foodie.repository.UserRepository;
 import com.foodie.service.NotificationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class StoreController {
     private final StoreRepository storeRepo;
     private final NotificationService notif;
-    public StoreController(StoreRepository s, NotificationService n){storeRepo=s;notif=n;}
+    private final UserRepository userRepo;
+    private final FoodItemRepository foodRepo;
+
+    public StoreController(StoreRepository s, NotificationService n, UserRepository userRepo, FoodItemRepository foodRepo){
+        storeRepo=s;notif=n;this.userRepo=userRepo;this.foodRepo=foodRepo;
+    }
 
     @GetMapping("/api/stores")
     public ResponseEntity<ApiResponse<List<Store>>> approved(){return ResponseEntity.ok(ApiResponse.ok("OK",storeRepo.findByApproved(true)));}
+
+    @GetMapping("/api/promotions")
+    public ResponseEntity<ApiResponse<List<Map<String,Object>>>> promotions(){
+        var stores = storeRepo.findByApproved(true);
+        var activeSellerIds = userRepo.findByActiveTrue().stream()
+            .filter(u -> u.getRole() == UserRole.SELLER)
+            .map(u -> u.getId())
+            .collect(java.util.stream.Collectors.toSet());
+
+        var promo = stores.stream()
+            .filter(s -> s.getOwnerId() != null && activeSellerIds.contains(s.getOwnerId()))
+            .filter(s -> !foodRepo.findByStoreIdAndAvailable(s.getId(), true).isEmpty())
+            .limit(8)
+            .map(s -> {
+                Map<String,Object> m = new LinkedHashMap<>();
+                m.put("id", s.getId());
+                m.put("storeId", s.getId());
+                m.put("storeName", s.getName());
+                m.put("title", (s.getName() == null ? "Store" : s.getName()) + " bundle deal");
+                m.put("subtitle", "Trending picks in " + (s.getCategory() == null ? "General" : s.getCategory()));
+                m.put("badge", "Seller Promo");
+                m.put("category", s.getCategory());
+                m.put("imageUrl", s.getImageUrl());
+                return m;
+            })
+            .toList();
+
+        return ResponseEntity.ok(ApiResponse.ok("OK", promo));
+    }
 
     @PostMapping("/api/seller/store")
     public ResponseEntity<ApiResponse<Store>> create(@RequestBody Store s){

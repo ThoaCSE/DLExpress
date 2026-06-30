@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import { Client } from '@stomp/stompjs'
+import SockJS from 'sockjs-client/dist/sockjs'
 import api from '../api/axios'
 
 const STATUS_OPTIONS = ['PENDING', 'PREPARING', 'READY', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED']
@@ -28,6 +30,40 @@ export default function Orders() {
 
   useEffect(() => {
     fetchOrders()
+  }, [])
+
+  useEffect(() => {
+    const client = new Client({
+      webSocketFactory: () => new SockJS('/ws'),
+      reconnectDelay: 3000,
+    })
+
+    client.onConnect = () => {
+      client.subscribe('/topic/orders', (frame) => {
+        try {
+          const payload = JSON.parse(frame.body)
+          const incoming = payload?.order || payload
+          if (!incoming?.id) return
+
+          setOrders((prev) => {
+            const idx = prev.findIndex((order) => order.id === incoming.id)
+            if (idx === -1) {
+              return [incoming, ...prev]
+            }
+            const clone = [...prev]
+            clone[idx] = { ...clone[idx], ...incoming }
+            return clone
+          })
+        } catch {
+          // ignore parse errors
+        }
+      })
+    }
+
+    client.activate()
+    return () => {
+      client.deactivate()
+    }
   }, [])
 
   const updateStatus = async (orderId, status) => {

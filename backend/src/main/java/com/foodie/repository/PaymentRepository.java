@@ -7,4 +7,6 @@ public interface PaymentRepository extends MongoRepository<Payment,String> {
     Optional<Payment> findByOrderId(String orderId);
     List<Payment> findByBuyerId(String buyerId);
     List<Payment> findAllByOrderByCreatedAtDesc();
+    void deleteByBuyerId(String buyerId);
+    void deleteByOrderIdIn(List<String> orderIds);
 }

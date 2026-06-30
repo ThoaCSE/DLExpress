@@ -21,6 +21,8 @@ export default function ListItem() {
   const [filterCategory, setFilterCategory] = useState('All')
   const [editItem, setEditItem] = useState(null)
   const [message, setMessage] = useState('')
+  const [categoryOptions, setCategoryOptions] = useState(SELLER_CATEGORIES)
+  const [customEditCategory, setCustomEditCategory] = useState('')
 
   useEffect(() => {
     if (!auth?.userId) return
@@ -30,7 +32,10 @@ export default function ListItem() {
   const fetchItems = async () => {
     if (!store?.id) return
     const res = await api.get(`/foods/store/${store.id}`)
-    setItems(res.data?.data || [])
+    const rows = res.data?.data || []
+    setItems(rows)
+    const dynamicCategories = [...new Set(rows.map((item) => item.category).filter(Boolean))]
+    setCategoryOptions([...new Set([...SELLER_CATEGORIES, ...dynamicCategories])])
   }
 
   useEffect(() => {
@@ -79,6 +84,14 @@ export default function ListItem() {
     }
   }
 
+  const addEditCategory = () => {
+    const value = customEditCategory.trim()
+    if (!value || !editItem) return
+    setCategoryOptions((prev) => (prev.includes(value) ? prev : [...prev, value]))
+    setEditItem({ ...editItem, category: value })
+    setCustomEditCategory('')
+  }
+
   return (
     <div>
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
@@ -90,7 +103,7 @@ export default function ListItem() {
           <button className={`btn btn-sm ${filterCategory === 'All' ? 'btn-danger' : 'btn-outline-secondary'}`} onClick={() => setFilterCategory('All')}>
             All
           </button>
-          {SELLER_CATEGORIES.slice(0, 5).map((category) => (
+          {categoryOptions.slice(0, 6).map((category) => (
             <button key={category} className={`btn btn-sm ${filterCategory === category ? 'btn-danger' : 'btn-outline-secondary'}`} onClick={() => setFilterCategory(category)}>
               {category}
             </button>
@@ -165,10 +178,17 @@ export default function ListItem() {
             <div className="col-md-6">
               <label className="form-label">Category</label>
               <select className="form-select" value={editItem.category} onChange={(e) => setEditItem({ ...editItem, category: e.target.value })}>
-                {SELLER_CATEGORIES.map((category) => (
+                {categoryOptions.map((category) => (
                   <option key={category} value={category}>{category}</option>
                 ))}
               </select>
+            </div>
+            <div className="col-md-6">
+              <label className="form-label">Add Custom Category</label>
+              <div className="input-group">
+                <input className="form-control" value={customEditCategory} onChange={(e) => setCustomEditCategory(e.target.value)} placeholder="e.g. Healthy Bowl" />
+                <button type="button" className="btn btn-outline-secondary" onClick={addEditCategory}>Add</button>
+              </div>
             </div>
             <div className="col-md-6">
               <label className="form-label">Image URL</label>

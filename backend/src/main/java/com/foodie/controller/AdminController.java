@@ -5,7 +5,6 @@ import com.foodie.repository.*;
 import com.foodie.service.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController @RequestMapping("/api/admin")
@@ -15,9 +14,14 @@ public class AdminController {
     private final AccountVerifyService verifyService;
     private final PaymentRepository paymentRepo;
     private final OrderRepository orderRepo;
+    private final StoreRepository storeRepo;
+    private final FoodItemRepository foodRepo;
+    private final NotificationRepository notifRepo;
 
-    public AdminController(UserRepository u, NotificationService n, AccountVerifyService v, PaymentRepository p, OrderRepository o){
-        userRepo=u;notif=n;verifyService=v;paymentRepo=p;orderRepo=o;
+    public AdminController(UserRepository u, NotificationService n, AccountVerifyService v,
+                           PaymentRepository p, OrderRepository o, StoreRepository s,
+                           FoodItemRepository f, NotificationRepository notifRepo){
+        userRepo=u;notif=n;verifyService=v;paymentRepo=p;orderRepo=o;storeRepo=s;foodRepo=f;this.notifRepo=notifRepo;
     }
 
     @GetMapping("/users")
@@ -27,6 +31,73 @@ public class AdminController {
     public ResponseEntity<ApiResponse<String>> setActive(@PathVariable String id,@RequestParam boolean active){
         userRepo.findById(id).ifPresent(u->{u.setActive(active);userRepo.save(u);});
         return ResponseEntity.ok(ApiResponse.ok(active?"Unlocked":"Locked",null));
+    }
+
+    @DeleteMapping("/users/{id}/hard")
+    public ResponseEntity<ApiResponse<Map<String,Object>>> hardDeleteUser(@PathVariable String id){
+        var userOpt = userRepo.findById(id);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(404).body(ApiResponse.error("User not found"));
+        }
+
+        var user = userOpt.get();
+        if (user.getRole() == UserRole.ADMIN) {
+            return ResponseEntity.status(400).body(ApiResponse.error("Admin user cannot be hard deleted"));
+        }
+
+        int storesDeleted = 0;
+        int foodsDeleted = 0;
+        int sellerOrdersDeleted = 0;
+        int buyerOrdersDeleted = 0;
+        int paymentsDeleted = 0;
+
+        if (user.getRole() == UserRole.SELLER) {
+            var stores = storeRepo.findAllByOwnerId(id);
+            var storeIds = stores.stream().map(Store::getId).toList();
+            storesDeleted = storeIds.size();
+
+            if (!storeIds.isEmpty()) {
+                var sellerOrders = orderRepo.findByStoreIdIn(storeIds);
+                var sellerOrderIds = sellerOrders.stream().map(Order::getId).toList();
+                sellerOrdersDeleted = sellerOrderIds.size();
+
+                foodsDeleted = storeIds.stream().mapToInt(storeId -> foodRepo.findByStoreId(storeId).size()).sum();
+
+                foodRepo.deleteByStoreIdIn(storeIds);
+
+                if (!sellerOrderIds.isEmpty()) {
+                    paymentRepo.deleteByOrderIdIn(sellerOrderIds);
+                    paymentsDeleted += sellerOrderIds.size();
+                }
+
+                orderRepo.deleteByStoreIdIn(storeIds);
+                storeRepo.deleteByOwnerId(id);
+            }
+        }
+
+        var buyerOrders = orderRepo.findByBuyerIdOrderByCreatedAtDesc(id);
+        var buyerOrderIds = buyerOrders.stream().map(Order::getId).toList();
+        buyerOrdersDeleted = buyerOrderIds.size();
+
+        if (!buyerOrderIds.isEmpty()) {
+            paymentRepo.deleteByOrderIdIn(buyerOrderIds);
+            paymentsDeleted += buyerOrderIds.size();
+        }
+
+        paymentRepo.deleteByBuyerId(id);
+        orderRepo.deleteByBuyerId(id);
+        notifRepo.deleteByUserId(id);
+        userRepo.deleteById(id);
+
+        Map<String,Object> result = new LinkedHashMap<>();
+        result.put("deletedUserId", id);
+        result.put("role", user.getRole().name());
+        result.put("storesDeleted", storesDeleted);
+        result.put("foodsDeleted", foodsDeleted);
+        result.put("sellerOrdersDeleted", sellerOrdersDeleted);
+        result.put("buyerOrdersDeleted", buyerOrdersDeleted);
+        result.put("paymentsDeletedApprox", paymentsDeleted);
+        return ResponseEntity.ok(ApiResponse.ok("User permanently deleted from MongoDB", result));
     }
 
     // v5.2: list pending deletion requests

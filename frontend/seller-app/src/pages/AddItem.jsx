@@ -21,6 +21,8 @@ export default function AddItem() {
   const [message, setMessage] = useState('')
   const [latestItems, setLatestItems] = useState([])
   const [uploadingImage, setUploadingImage] = useState(false)
+  const [categoryOptions, setCategoryOptions] = useState(SELLER_CATEGORIES)
+  const [customCategory, setCustomCategory] = useState('')
 
   useEffect(() => {
     if (!auth?.userId) return
@@ -34,7 +36,10 @@ export default function AddItem() {
     if (!store?.id) return
     try {
       const res = await api.get(`/foods/store/${store.id}`)
-      setLatestItems((res.data?.data || []).slice(-5).reverse())
+      const rows = res.data?.data || []
+      setLatestItems(rows.slice(-5).reverse())
+      const dynamicCategories = [...new Set(rows.map((item) => item.category).filter(Boolean))]
+      setCategoryOptions([...new Set([...SELLER_CATEGORIES, ...dynamicCategories])])
     } catch (e) {
       setLatestItems([])
     }
@@ -97,6 +102,14 @@ export default function AddItem() {
     }
   }
 
+  const addCustomCategory = () => {
+    const value = customCategory.trim()
+    if (!value) return
+    setCategoryOptions((prev) => (prev.includes(value) ? prev : [...prev, value]))
+    setForm((prev) => ({ ...prev, category: value }))
+    setCustomCategory('')
+  }
+
   return (
     <div className="row g-4">
       <div className="col-lg-5">
@@ -115,10 +128,17 @@ export default function AddItem() {
             <div className="mb-3">
               <label className="form-label">Category</label>
               <select className="form-select" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
-                {SELLER_CATEGORIES.map((category) => (
+                {categoryOptions.map((category) => (
                   <option key={category} value={category}>{category}</option>
                 ))}
               </select>
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Custom Category</label>
+              <div className="input-group">
+                <input className="form-control" value={customCategory} onChange={(e) => setCustomCategory(e.target.value)} placeholder="e.g. Vegan Combo" />
+                <button type="button" className="btn btn-outline-secondary" onClick={addCustomCategory}>Add</button>
+              </div>
             </div>
             <div className="mb-3">
               <label className="form-label">Price (€)</label>

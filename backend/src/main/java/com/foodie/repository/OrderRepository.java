@@ -8,4 +8,6 @@ public interface OrderRepository extends MongoRepository<Order,String> {
     List<Order> findAllByOrderByCreatedAtDesc();
     List<Order> findByStoreIdIn(List<String> storeIds);
     List<Order> findByBuyerIdAndPaymentStatus(String buyerId, String paymentStatus);
+    void deleteByBuyerId(String buyerId);
+    void deleteByStoreIdIn(List<String> storeIds);
 }

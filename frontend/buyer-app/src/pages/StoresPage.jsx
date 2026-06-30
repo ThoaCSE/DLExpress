@@ -20,12 +20,18 @@ export default function StoresPage() {
   const [loading, setLoading] = useState(true)
   const [category, setCategory] = useState('All')
   const [searchText, setSearchText] = useState('')
+  const [promotions, setPromotions] = useState([])
+  const [promoPopupClosed, setPromoPopupClosed] = useState(false)
 
   useEffect(() => {
     axios.get('/api/stores')
       .then((res) => setStores(res.data?.data || []))
       .catch(() => setStores([]))
       .finally(() => setLoading(false))
+
+    axios.get('/api/promotions')
+      .then((res) => setPromotions(res.data?.data || []))
+      .catch(() => setPromotions([]))
   }, [])
 
   const filteredStores = stores.filter((store) => {
@@ -38,6 +44,17 @@ export default function StoresPage() {
     <>
       <Header />
       <ExploreMenu category={category} setCategory={setCategory} searchText={searchText} setSearchText={setSearchText} />
+
+      {!promoPopupClosed && promotions.length > 0 && (
+        <div className="promo-popup shadow">
+          <button className="btn-close promo-popup-close" onClick={() => setPromoPopupClosed(true)} aria-label="Close" />
+          <div className="small text-uppercase fw-bold text-danger mb-2">Seller Advertisement</div>
+          <h5 className="mb-1">{promotions[0].title}</h5>
+          <p className="text-muted small mb-3">{promotions[0].subtitle}</p>
+          <Link className="btn btn-danger btn-sm" to={`/stores/${promotions[0].storeId}`}>Visit Shop</Link>
+        </div>
+      )}
+
       <section className="store-grid mb-4">
         {loading ? (
           <div className="text-center py-5"><div className="spinner-border text-danger" /></div>
@@ -63,7 +80,7 @@ export default function StoresPage() {
           </div>
         )}
       </section>
-      <DealsForToday />
+      <DealsForToday promotions={promotions} />
     </>
   )
 }

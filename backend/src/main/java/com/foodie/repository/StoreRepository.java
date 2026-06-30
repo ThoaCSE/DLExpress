@@ -7,4 +7,5 @@ public interface StoreRepository extends MongoRepository<Store,String> {
     List<Store> findByApproved(boolean approved);
     Optional<Store> findByOwnerId(String ownerId);
     List<Store> findAllByOwnerId(String ownerId);
+    void deleteByOwnerId(String ownerId);
 }

@@ -60,3 +60,37 @@ select {
 	border-radius: 18px;
 	border: 1px solid #dfe3ea;
 }
+
+#admin-wrapper {
+	overflow-x: hidden;
+}
+
+#admin-sidebar-wrapper {
+	min-height: 100vh;
+	margin-left: 0;
+	transition: margin 0.25s ease-out;
+}
+
+#admin-sidebar-wrapper .list-group {
+	width: 16rem;
+}
+
+#admin-page-content {
+	min-width: 0;
+	width: 100%;
+}
+
+#admin-sidebar-wrapper .list-group-item {
+	border: none;
+	border-radius: 0;
+}
+
+#admin-sidebar-wrapper .list-group-item:hover {
+	background: rgba(220, 53, 69, 0.08);
+}
+
+#admin-sidebar-wrapper .list-group-item.active {
+	background: #dc3545;
+	color: #fff;
+	border-color: #dc3545;
+}
