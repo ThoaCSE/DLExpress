@@ -3,6 +3,7 @@ package com.foodie.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Document(collection = "food_items")
 public class FoodItem {
@@ -13,6 +14,11 @@ public class FoodItem {
     private double price;
     private String category;
     private String imageUrl;
+    private String brand;
+    private String unit;
+    private String market;
+    private Double originalPrice;
+    private List<String> tags;
     private boolean available = true;
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -30,6 +36,16 @@ public class FoodItem {
     public void setCategory(String v) { category = v; }
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String v) { imageUrl = v; }
+    public String getBrand() { return brand; }
+    public void setBrand(String v) { brand = v; }
+    public String getUnit() { return unit; }
+    public void setUnit(String v) { unit = v; }
+    public String getMarket() { return market; }
+    public void setMarket(String v) { market = v; }
+    public Double getOriginalPrice() { return originalPrice; }
+    public void setOriginalPrice(Double v) { originalPrice = v; }
+    public List<String> getTags() { return tags; }
+    public void setTags(List<String> v) { tags = v; }
     public boolean isAvailable() { return available; }
     public void setAvailable(boolean v) { available = v; }
     public LocalDateTime getCreatedAt() { return createdAt; }

@@ -8,3 +8,12 @@ export const fetchFoodList = async () => {
     return []
   }
 }
+
+export const fetchFoodById = async (id) => {
+  try {
+    const response = await axios.get(`/api/foods/${id}`)
+    return response.data?.data || null
+  } catch {
+    return null
+  }
+}

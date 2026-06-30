@@ -50,6 +50,11 @@ export default function Navbar() {
               </Link>
             </li>
             <li className="nav-item">
+              <Link className="nav-link" to="/groceries">
+                Groceries
+              </Link>
+            </li>
+            <li className="nav-item">
               <Link className="nav-link" to="/orders">
                 Orders
               </Link>

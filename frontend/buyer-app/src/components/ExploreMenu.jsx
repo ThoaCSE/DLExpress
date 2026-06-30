@@ -1,6 +1,6 @@
 import React from 'react'
 
-const CATEGORIES = ['All', 'Fruits', 'Vegetables', 'Dairy', 'Bakery', 'Snacks', 'Drinks']
+const CATEGORIES = ['All', 'Fruits', 'Vegetables', 'Dairy', 'Bakery', 'Snacks', 'Drinks', 'Groceries', 'Baby Care', 'Beverages']
 
 export default function ExploreMenu({ category, setCategory, searchText, setSearchText }) {
   return (

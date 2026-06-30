@@ -1,50 +1,145 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-const DEALS = [
+const HOT_DEALS = [
   {
-    id: 'deal1',
-    title: 'Family Bundle Week',
-    subtitle: 'Save up to 30% on rice, vegetables, milk and eggs',
-    cta: 'Use code FAMILY30',
-    color: 'linear-gradient(135deg, #fff0ea 0%, #ffe3e8 100%)',
+    id: 'hd1',
+    title: 'Farm-fresh basket, 30% off today',
+    subtitle: 'Salad',
+    category: 'Fruits & Vegetables',
+    img: '/images/header1.jpg',
+    fallbackBg: 'linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%)',
   },
   {
-    id: 'deal2',
-    title: 'Late Night Cravings',
-    subtitle: 'Exclusive snacks and drinks combo after 8 PM',
-    cta: 'Free delivery for orders above €20',
-    color: 'linear-gradient(135deg, #ecf8ff 0%, #deebff 100%)',
+    id: 'hd2',
+    title: 'Weekend pizza bundle — great value',
+    subtitle: 'Pizza',
+    category: 'Snacks & Branded Foods',
+    img: '/images/header2.jpg',
+    fallbackBg: 'linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%)',
   },
   {
-    id: 'deal3',
-    title: 'Breakfast Boost Pack',
-    subtitle: 'Fresh bakery + coffee + fruit at a special combo price',
-    cta: 'Delivery in 20-30 mins from nearby stores',
-    color: 'linear-gradient(135deg, #f4f9eb 0%, #e8f5d9 100%)',
+    id: 'hd3',
+    title: 'Sweet tooth? Cakes are 20% off',
+    subtitle: 'Cake',
+    category: 'Bakery, Cakes & Dairy',
+    img: '/images/header3.jpg',
+    fallbackBg: 'linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%)',
   },
 ]
 
+const SWIPE_THRESHOLD = 50
+
 export default function Header() {
-  const [active, setActive] = useState(0)
+  const [activeSlide, setActiveSlide] = useState(0)
+  const [imgErrors, setImgErrors] = useState({})
+  const navigate = useNavigate()
+  const trackRef = useRef(null)
+  const dragState = useRef({ startX: 0, dragging: false, moved: false })
 
   useEffect(() => {
-    const timer = setInterval(() => setActive((value) => (value + 1) % DEALS.length), 5000)
-    return () => clearInterval(timer)
+    const t = setInterval(
+      () => setActiveSlide((s) => (s + 1) % HOT_DEALS.length),
+      5000
+    )
+    return () => clearInterval(t)
   }, [])
 
+  const goToSlide = (i) => setActiveSlide(i)
+
+  const goToDeal = (deal) =>
+    navigate(`/explore?category=${encodeURIComponent(deal.category)}`)
+
+  const handleDragStart = (clientX) => {
+    dragState.current = { startX: clientX, dragging: true, moved: false }
+  }
+
+  const handleDragMove = (clientX) => {
+    if (!dragState.current.dragging) return
+    if (Math.abs(clientX - dragState.current.startX) > 10)
+      dragState.current.moved = true
+  }
+
+  const handleDragEnd = (clientX) => {
+    if (!dragState.current.dragging) return
+    const delta = clientX - dragState.current.startX
+    if (Math.abs(delta) > SWIPE_THRESHOLD) {
+      if (delta < 0) setActiveSlide((s) => (s + 1) % HOT_DEALS.length)
+      else setActiveSlide((s) => (s - 1 + HOT_DEALS.length) % HOT_DEALS.length)
+    }
+    dragState.current.dragging = false
+  }
+
+  const handleSlideClick = (deal, e) => {
+    if (dragState.current.moved) { e.preventDefault(); return }
+    goToDeal(deal)
+  }
+
   return (
-    <section className="buyer-hero mb-4">
-      <div className="buyer-hero-content p-4" style={{ background: DEALS[active].color }}>
-        <div>
-          <span className="eyebrow">Smart Shopping Experience</span>
-          <h1>Find great stores, grab bundles, and order in minutes.</h1>
-          <p className="text-muted">DLExpress brings groceries and ready-to-eat items into one customer-friendly app with live offers.</p>
-          <div className="hero-ad-badge mt-3">{DEALS[active].cta}</div>
+    <section className="header-hot-deals mb-4">
+      <div className="hot-deals-label">
+        <span className="hd-eyebrow">Hot deals</span>
+        <h2>Today&apos;s picks, picked fast</h2>
+      </div>
+
+      <div
+        className="hd-carousel"
+        ref={trackRef}
+        onTouchStart={(e) => handleDragStart(e.touches[0].clientX)}
+        onTouchMove={(e) => handleDragMove(e.touches[0].clientX)}
+        onTouchEnd={(e) => handleDragEnd(e.changedTouches[0].clientX)}
+        onMouseDown={(e) => handleDragStart(e.clientX)}
+        onMouseMove={(e) => handleDragMove(e.clientX)}
+        onMouseUp={(e) => handleDragEnd(e.clientX)}
+        onMouseLeave={() => (dragState.current.dragging = false)}
+      >
+        <div
+          className="hd-carousel-track"
+          style={{ transform: `translateX(-${activeSlide * 100}%)` }}
+        >
+          {HOT_DEALS.map((deal) => (
+            <button
+              className="hd-carousel-slide"
+              key={deal.id}
+              onClick={(e) => handleSlideClick(deal, e)}
+              aria-label={`View ${deal.subtitle} deals`}
+              style={imgErrors[deal.id] ? { background: deal.fallbackBg } : {}}
+            >
+              {!imgErrors[deal.id] && (
+                <img
+                  src={deal.img}
+                  alt={deal.title}
+                  draggable={false}
+                  onError={() =>
+                    setImgErrors((prev) => ({ ...prev, [deal.id]: true }))
+                  }
+                />
+              )}
+              {imgErrors[deal.id] && (
+                <div className="hd-fallback-content">
+                  <span className="hd-fallback-tag">{deal.subtitle}</span>
+                  <span className="hd-fallback-title">{deal.title}</span>
+                </div>
+              )}
+              {!imgErrors[deal.id] && (
+                <div className="hd-carousel-caption">
+                  <span className="hd-carousel-tag">{deal.subtitle}</span>
+                  <span className="hd-carousel-title">{deal.title}</span>
+                </div>
+              )}
+            </button>
+          ))}
         </div>
-        <div className="hero-feature p-4 rounded-4 bg-white shadow-sm">
-          <small className="text-uppercase fw-semibold text-secondary">Sponsored Offer</small>
-          <h3 className="mt-2 mb-1">{DEALS[active].title}</h3>
-          <p className="text-muted mb-0">{DEALS[active].subtitle}</p>
+
+        <div className="hd-dot-trail">
+          {HOT_DEALS.map((_, i) => (
+            <button
+              key={i}
+              className={`hd-dot ${i === activeSlide ? 'hd-dot-active' : ''}`}
+              onClick={() => goToSlide(i)}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
         </div>
       </div>
     </section>

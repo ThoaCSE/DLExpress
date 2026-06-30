@@ -5,11 +5,14 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import './index.css'
 import { BrowserRouter } from 'react-router-dom'
+import { StoreContextProvider } from './context/StoreContext.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <StoreContextProvider>
+        <App />
+      </StoreContextProvider>
     </BrowserRouter>
   </React.StrictMode>
 )

@@ -44,44 +44,31 @@ select {
   border-radius: 28px;
 }
 
-.login-screen {
-  background: linear-gradient(180deg, #fdf2f2 0%, #f5f6f7 100%);
+/* ── Auth pages — foodies design ── */
+.auth-container {
+  min-height: 100vh;
+  background-image: url('/images/bg1.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #fef9c3;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 
-.login-panel {
-  width: min(100%, 440px);
-  border-radius: 28px;
-  background: white;
-}
-
-.login-header {
-  background: linear-gradient(135deg, #dc3545 0%, #e83e5b 100%);
-  box-shadow: inset 0 -6px 24px rgba(0, 0, 0, 0.08);
-}
-
-.login-body {
-  background: #fff;
-}
-
-.login-header .display-5,
-.login-header .display-6 {
-  font-weight: 700;
-}
-
-.login-header .small {
-  letter-spacing: 0.02em;
-}
-
-.login-body .form-control {
+.auth-container .form-control {
   border-radius: 10px;
 }
 
-.login-body .btn {
-  border-radius: 999px;
+.auth-container .form-check-input:hover {
+  border-color: #FF69B4 !important;
 }
 
-.login-body .alert {
-  border-radius: 16px;
+.auth-container .form-check-input:checked {
+  background-color: #FF69B4 !important;
+  border-color: #FF69B4 !important;
+  box-shadow: 0 0 0 0.25rem rgba(255, 105, 180, 0.25) !important;
 }
 
 .buyer-hero h1 {
@@ -591,4 +578,179 @@ select {
   .form-row--triple {
     grid-template-columns: 1fr;
   }
+}
+
+/* ── Header hot-deals image carousel ── */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap');
+
+.header-hot-deals {
+  padding: 28px 0 8px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.hot-deals-label {
+  margin-bottom: 16px;
+}
+
+.hd-eyebrow {
+  display: inline-block;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #e85a38;
+  margin-bottom: 6px;
+}
+
+.header-hot-deals h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: #1b3a2f;
+  margin: 0;
+}
+
+.hd-carousel {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(27, 58, 47, 0.08);
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.hd-carousel-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hd-carousel-slide {
+  flex: 0 0 100%;
+  position: relative;
+  height: 280px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+  overflow: hidden;
+}
+
+.hd-carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+.hd-carousel-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 28px 28px 22px;
+  background: linear-gradient(to top, rgba(27, 58, 47, 0.85), transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+}
+
+.hd-carousel-tag {
+  color: #ffd9c9;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.hd-carousel-title {
+  color: white;
+  font-family: 'Fraunces', serif;
+  font-size: 19px;
+  font-weight: 500;
+}
+
+/* Fallback when images haven't been added yet */
+.hd-fallback-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 8px;
+  padding: 24px;
+}
+
+.hd-fallback-tag {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #1b3a2f;
+  opacity: 0.7;
+}
+
+.hd-fallback-title {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1b3a2f;
+  text-align: center;
+}
+
+.hd-dot-trail {
+  position: absolute;
+  bottom: 16px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
+
+.hd-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.25s ease;
+}
+
+.hd-dot-active {
+  background: #ff6b47;
+  width: 22px;
+  border-radius: 5px;
+}
+
+@media (max-width: 900px) {
+  .hd-carousel-slide {
+    height: 200px;
+  }
+  .header-hot-deals {
+    padding: 20px 0 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hd-carousel-track {
+    transition: none;
+  }
+}
+
+/* ── ExploreMenu category outline (foodies style) ── */
+.category-carousel .category-img-wrap:hover {
+  transform: scale(1.06);
+  outline: 4px solid #FBB7C7;
+  outline-offset: 0;
+}
+
+.category-carousel .category-active {
+  transform: scale(1.06);
+  outline: 4px solid #FF69B4;
+  outline-offset: 0;
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
 }

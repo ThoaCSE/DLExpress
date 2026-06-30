@@ -13,6 +13,9 @@ const CATEGORY_MAP = {
   Bakery: 'Bakery',
   Snacks: 'Snacks',
   Drinks: 'Drinks',
+  Groceries: 'Groceries',
+  'Baby Care': 'Baby Care',
+  Beverages: 'Beverages',
 }
 
 export default function StoresPage() {
