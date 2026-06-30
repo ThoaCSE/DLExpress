@@ -30,7 +30,7 @@ export default function App() {
       <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
       <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
       <Route path="/" element={<Guard><Layout /></Guard>}>
-        <Route index element={<Navigate to="/stores" replace />} />
+        <Route index element={<Navigate to="/explore" replace />} />
         <Route path="stores" element={<StoresPage />} />
         <Route path="stores/:id" element={<StorePage />} />
         <Route path="groceries" element={<GroceriesPage />} />

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const FoodItem = ({ item }) => {
-    const { _id, name, description, price, market, image } = item;
+    const { id, name, description, price, market, imageUrl } = item;
 
     // SAFE GUARD: Auto replace with a beautiful food placeholder if the database link is broken
     const handleImageError = (e) => {
@@ -14,9 +14,9 @@ const FoodItem = ({ item }) => {
             <div className="card h-100 shadow-sm" style={{ maxWidth: "320px" }}>
 
                 {/* Dynamic Image Link Container */}
-                <Link to={`/food/${_id}`}>
+                <Link to={`/food/${id}`}>
                     <img
-                        src={image || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80"}
+                        src={imageUrl || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80"}
                         className="card-img-top"
                         alt={name || "Product Catalog Item"}
                         onError={handleImageError} // FIXED: Listen to image load errors and hot-swap the source url
@@ -33,10 +33,10 @@ const FoodItem = ({ item }) => {
                         </p>
 
                         <Link
-                            to={`/${market.toLowerCase().replace(" ", "")}`}
+                            to={`/${(market || '').toLowerCase().replace(" ", "")}`}
                             className="badge bg-light text-primary mb-2 text-decoration-none"
                         >
-                            {market}
+                            {market || 'General'}
                         </Link>
                     </div>
 
@@ -61,7 +61,7 @@ const FoodItem = ({ item }) => {
                 <div className="card-footer d-flex justify-content-between bg-light border-top-0 py-3">
                     <Link
                         className="btn btn-primary btn-sm flex-grow-1 me-2"
-                        to={`/food/${_id}`}
+                        to={`/food/${id}`}
                         style={{ backgroundColor: "#99D9F2", border: "none" }}
                     >
                         View Food

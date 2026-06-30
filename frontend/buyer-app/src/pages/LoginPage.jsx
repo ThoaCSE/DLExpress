@@ -3,14 +3,18 @@ import { useNavigate, Link, Navigate } from 'react-router-dom'
 import axios from 'axios'
 import { getAuth, setAuth } from '../utils/auth'
 
+const REMEMBER_KEY = 'dlexpress_remember_email'
+
 export default function LoginPage() {
   const auth = getAuth()
-  const [form, setForm] = useState({ email: '', password: '' })
+  const saved = localStorage.getItem(REMEMBER_KEY) || ''
+  const [form, setForm] = useState({ email: saved, password: '' })
+  const [rememberMe, setRememberMe] = useState(!!saved)
   const [err, setErr] = useState('')
   const [loading, setLoading] = useState(false)
   const nav = useNavigate()
 
-  if (auth) return <Navigate to="/stores" replace />
+  if (auth) return <Navigate to="/explore" replace />
 
   const submit = async (e) => {
     e.preventDefault()
@@ -25,8 +29,10 @@ export default function LoginPage() {
         setLoading(false)
         return
       }
+      if (rememberMe) localStorage.setItem(REMEMBER_KEY, form.email)
+      else localStorage.removeItem(REMEMBER_KEY)
       setAuth(d)
-      nav('/stores')
+      nav('/explore')
     } catch (e) {
       setErr(e.response?.data?.message || e.message)
     } finally {
@@ -35,65 +41,60 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="auth-container py-5">
-      <div className="row w-100">
-        <div className="col-sm-9 col-md-7 col-lg-5 mx-auto">
-          <div className="card border-0 shadow rounded-3 my-2">
-            <div className="card-body p-4 p-sm-5">
-              <h5 className="card-title text-center mb-5 fw-light fs-5 text-uppercase text-secondary">
-                Sign In
-              </h5>
+    <div className="login-screen min-vh-100 d-flex align-items-center justify-content-center px-3">
+      <div className="login-panel shadow-sm overflow-hidden">
+        <div className="login-header text-white text-center p-4">
+          <div className="mb-3 display-5">Welcome Back</div>
+          <div className="small opacity-85">Login to browse stores, track orders and get delivery updates.</div>
+        </div>
 
-              {err && <div className="alert alert-danger py-2 small">{err}</div>}
-
-              <form onSubmit={submit}>
-                <div className="form-floating mb-3">
-                  <input
-                    type="email"
-                    className="form-control rounded-2"
-                    id="loginEmail"
-                    placeholder="name@example.com"
-                    value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    required
-                  />
-                  <label htmlFor="loginEmail" className="text-muted">Email address</label>
-                </div>
-
-                <div className="form-floating mb-3">
-                  <input
-                    type="password"
-                    className="form-control rounded-2"
-                    id="loginPassword"
-                    placeholder="Password"
-                    value={form.password}
-                    onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    required
-                  />
-                  <label htmlFor="loginPassword" className="text-muted">Password</label>
-                </div>
-
-                <div className="d-grid mb-3">
-                  <button
-                    className="btn text-uppercase fw-bold py-2 rounded-pill shadow-sm"
-                    type="submit"
-                    disabled={loading}
-                    style={{ letterSpacing: '1px', backgroundColor: '#99D9F2', border: 'none', color: '#1f2937' }}
-                  >
-                    {loading ? 'Signing in…' : 'Sign in'}
-                  </button>
-                </div>
-
-                <div className="small text-secondary mb-3 d-flex gap-2">
-                  Don&apos;t have an account? <Link to="/register">Sign up</Link>
-                </div>
-
-                <hr className="my-4 text-muted opacity-25" />
-              </form>
+        <div className="login-body p-4">
+          {err && <div className="alert alert-danger py-2 small">{err}</div>}
+          <form onSubmit={submit}>
+            <div className="mb-3">
+              <label className="form-label">Email address</label>
+              <input
+                className="form-control"
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                placeholder="customer@example.com"
+                required
+              />
             </div>
+            <div className="mb-3">
+              <label className="form-label">Password</label>
+              <input
+                className="form-control"
+                type="password"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                placeholder="••••••••"
+                required
+              />
+            </div>
+            <div className="form-check mb-3">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="rememberMe"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              <label className="form-check-label small text-secondary" htmlFor="rememberMe">
+                Remember me next time
+              </label>
+            </div>
+            <button className="btn btn-danger w-100 mb-3" disabled={loading}>
+              {loading ? 'Logging in…' : 'Login'}
+            </button>
+          </form>
+          <div className="text-center small text-muted">
+            New to DLExpress? <Link to="/register">Create an account</Link>
           </div>
         </div>
       </div>
     </div>
   )
 }
+

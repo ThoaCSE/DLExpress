@@ -25,13 +25,19 @@ public class AuthService {
         u.setPassword(encoder.encode(req.getPassword()));
         u.setPhone(req.getPhone()); u.setAddress(req.getAddress());
         u.setRole(req.getRole()!=null?req.getRole():UserRole.BUYER);
+        if (u.getRole() == UserRole.SELLER) u.setActive(false); // requires admin approval
         userRepo.save(u);
         return buildResponse(u, jwt.generate(u.getEmail()));
     }
 
     public AuthResponse login(LoginRequest req) {
         User u = userRepo.findByEmail(req.getEmail()).orElseThrow(()->new RuntimeException("Invalid email or password."));
-        if (!u.isActive()) throw new RuntimeException("Account is locked.");
+        if (!u.isActive()) {
+            String msg = u.getRole()==UserRole.SELLER
+                ? "Your seller account is pending admin approval."
+                : "Account is locked. Contact support.";
+            throw new RuntimeException(msg);
+        }
         if (!encoder.matches(req.getPassword(), u.getPassword())) throw new RuntimeException("Invalid email or password.");
         u.setLastLogin(LocalDateTime.now()); userRepo.save(u);
         return buildResponse(u, jwt.generate(u.getEmail()));

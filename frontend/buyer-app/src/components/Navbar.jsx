@@ -26,7 +26,7 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm buyer-navbar">
       <div className="container-fluid px-4">
-        <Link className="navbar-brand fw-bold text-danger" to="/stores">
+        <Link className="navbar-brand fw-bold text-danger" to="/explore">
           DLExpress
         </Link>
 
@@ -44,6 +44,11 @@ export default function Navbar() {
 
         <div className="collapse navbar-collapse" id="buyerNav">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <Link className="nav-link" to="/explore">
+                Explore
+              </Link>
+            </li>
             <li className="nav-item">
               <Link className="nav-link" to="/stores">
                 Stores
