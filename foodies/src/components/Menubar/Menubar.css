@@ -1,0 +1,4 @@
+.menubar {
+    background-color: #FCE38A !important; /* Đổi thành tông vàng Pastel dịu mắt */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Thêm đổ bóng nhẹ phía dưới cho sang xịn */
+}

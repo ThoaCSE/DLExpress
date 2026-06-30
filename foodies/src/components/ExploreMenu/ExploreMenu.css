@@ -1,0 +1,47 @@
+.explore-menu-list::-webkit-scrollbar {
+    display: none;
+}
+.explore-menu-list {
+    scrollbar-width: none;}
+.explore-menu-list-item img {
+    cursor: pointer;}
+.explore-menu-list-item .active {
+    border: 5px solid tomato;
+    padding: 2px;}
+.explore-menu-list-item p {
+    color: #747474;
+    cursor: pointer;}
+.scroll-icon {
+    font-size: 24px;
+    cursor: pointer;
+    margin-left: 10px;
+    color: #F1B0E0;
+    transition: color 0.2s;}
+.scroll-icon:hover {
+    color: tomato;}
+.explore-menu hr {
+    margin-left: 10px 0px;
+    height: 2px;
+    background-color: #FFF0F5;
+    border: #FDFD96;
+}
+
+/* 1. KHI HOVER (Di chuột vào): Ảnh tự nở nhẹ và xuất hiện viền hồng ôm khít */
+.explore-menu-list-item img:hover {
+    transform: scale(1.06); /* Nở rộng nhẹ nhàng siêu đẹp */
+    outline: 4px solid #FBB7C7; /* Bung viền hồng dâu xinh xắn */
+    outline-offset: 0px; /* Ép viền ôm khít chặt chẽ sát viền ảnh */
+}
+
+/* 2. KHI ĐƯỢC CLICK CHỌN (Active): Giữ nguyên độ nở và ghim chặt viền hồng ngọt ngào */
+.explore-menu-list-item img.active {
+    transform: scale(1.06); /* Giữ nguyên trạng thái nở */
+    outline: 4px solid #FF69B4; /* Ghim viền hồng gợn sóng */
+    outline-offset: 0px; /* Khớp khít khịt 100% vào đường viền tròn */
+    box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3); /* Tạo hiệu ứng hào quang hồng nhẹ sang xịn */
+}
+
+/* Typography styles */
+.explore-menu-list-item p {
+    transition: color 0.3s ease;
+}
