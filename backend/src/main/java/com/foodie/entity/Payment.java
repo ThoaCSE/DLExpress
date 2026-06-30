@@ -10,7 +10,7 @@ public class Payment {
     private String orderId;
     private String buyerId;
     private double amount;
-    // v5.2: CASH, CARD, QR
+    // v6: CASH, CARD, QR
     private String method; // CASH | CARD | QR
     private String status; // PENDING | SUCCESS | FAILED
     private String transactionRef;

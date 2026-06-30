@@ -100,13 +100,13 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.ok("User permanently deleted from MongoDB", result));
     }
 
-    // v5.2: list pending deletion requests
+    // v6: list pending deletion requests
     @GetMapping("/deletion-requests")
     public ResponseEntity<ApiResponse<List<User>>> deletionRequests(){
         return ResponseEntity.ok(ApiResponse.ok("OK",userRepo.findByDeletionRequestedTrue()));
     }
 
-    // v5.2: admin reviews account deletion with verify flags
+    // v6: admin reviews account deletion with verify flags
     @GetMapping("/deletion-requests/{userId}/verify")
     public ResponseEntity<ApiResponse<Map<String,Object>>> verifyDeletion(@PathVariable String userId){
         var flags = verifyService.getFlags(userId);

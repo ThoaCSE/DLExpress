@@ -12,7 +12,7 @@ public class AccountController {
     private final NotificationService notif;
     public AccountController(UserRepository u, NotificationService n){userRepo=u;notif=n;}
 
-    // v5.2: user requests account deletion
+    // v6: user requests account deletion
     @PostMapping("/request-deletion")
     public ResponseEntity<ApiResponse<String>> requestDeletion(
         @RequestHeader(value="X-User-Id",required=false) String uid,

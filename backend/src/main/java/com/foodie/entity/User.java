@@ -17,7 +17,7 @@ public class User {
     private boolean active = true;
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime lastLogin;
-    // v5.2: deletion request
+    // v6: deletion request
     private boolean deletionRequested = false;
     private String deletionReason;
     private LocalDateTime deletionRequestedAt;

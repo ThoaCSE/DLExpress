@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * v5.2: Verifies whether an account is safe to delete.
+ * v6: Verifies whether an account is safe to delete.
  * Checks for unpaid orders, and unresolved disputes.
  */
 @Service
