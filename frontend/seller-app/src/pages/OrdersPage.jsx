@@ -1,10 +1,12 @@
-import React,{useEffect,useState} from 'react'
+import React,{useEffect,useState,useCallback} from 'react'
 import api from '../api/axios'
 const STATUSES=['PENDING','PREPARING','READY','OUT_FOR_DELIVERY','DELIVERED','CANCELLED']
 const PM_ICON={CASH:'💵',CARD:'💳',QR:'📱'}
+const POLL_INTERVAL = 30000
 export default function OrdersPage() {
   const [orders,setOrders]=useState([]); const [loading,setLoading]=useState(true)
-  useEffect(()=>{ api.get('/seller/orders').then(r=>setOrders(r.data?.data||[])).finally(()=>setLoading(false)) },[])
+  const fetchOrders = useCallback(()=>{ api.get('/seller/orders').then(r=>setOrders(r.data?.data||[])).finally(()=>setLoading(false)) },[])
+  useEffect(()=>{ fetchOrders(); const t=setInterval(fetchOrders,POLL_INTERVAL); return ()=>clearInterval(t) },[fetchOrders])
   const updateStatus=async(id,status)=>{
     await api.put(`/seller/orders/${id}/status?status=${status}`)
     setOrders(orders.map(o=>o.id===id?{...o,status}:o))

@@ -1,11 +1,13 @@
-import React,{useEffect,useState} from 'react'
+import React,{useEffect,useState,useCallback} from 'react'
 import api from '../api/axios'
 import {getAuth} from '../utils/auth'
 const ICON={ORDER_STATUS:'bi-bag-check',PAYMENT:'bi-credit-card',SYSTEM:'bi-bell',PROMOTION:'bi-tag'}
 const CLR={ORDER_STATUS:'text-primary',PAYMENT:'text-success',SYSTEM:'text-warning',PROMOTION:'text-info'}
+const POLL_INTERVAL = 30000
 export default function NotificationsPage() {
   const auth=getAuth(); const [items,setItems]=useState([]); const [loading,setLoading]=useState(true)
-  useEffect(()=>{ if(!auth?.userId) return; api.get(`/notifications/${auth.userId}`).then(r=>setItems(r.data?.data||[])).finally(()=>setLoading(false)) },[auth?.userId])
+  const fetchNotifs = useCallback(()=>{ if(!auth?.userId) return; api.get(`/notifications/${auth.userId}`).then(r=>setItems(r.data?.data||[])).finally(()=>setLoading(false)) },[auth?.userId])
+  useEffect(()=>{ fetchNotifs(); const t=setInterval(fetchNotifs,POLL_INTERVAL); return ()=>clearInterval(t) },[fetchNotifs])
   const markAll=()=>{ api.put(`/notifications/user/${auth.userId}/read-all`); setItems(items.map(n=>({...n,read:true}))) }
   const markOne=id=>{ api.put(`/notifications/${id}/read`); setItems(items.map(n=>n.id===id?{...n,read:true}:n)) }
   if(loading) return <div className="text-center py-5"><div className="spinner-border text-danger"/></div>

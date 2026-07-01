@@ -1,9 +1,16 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import axios from 'axios'
 
 export default function RegisterPage() {
-  const [form, setForm] = useState({ fullName: '', email: '', password: '', phone: '', address: '' })
+  const [searchParams] = useSearchParams()
+  const [form, setForm] = useState({
+    fullName: searchParams.get('fullName') || '',
+    email: searchParams.get('email') || '',
+    password: '',
+    phone: searchParams.get('phone') || '',
+    address: searchParams.get('address') || '',
+  })
   const [err, setErr] = useState('')
   const [loading, setLoading] = useState(false)
   const [registered, setRegistered] = useState(false)
