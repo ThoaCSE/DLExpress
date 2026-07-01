@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Document(collection = "food_items")
+@Document(collection = "goods")
 public class FoodItem {
     @Id private String id;
     private String storeId;
