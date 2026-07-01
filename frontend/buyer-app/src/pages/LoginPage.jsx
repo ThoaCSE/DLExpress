@@ -41,58 +41,56 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="login-screen min-vh-100 d-flex align-items-center justify-content-center px-3">
-      <div className="login-panel shadow-sm overflow-hidden">
-        <div className="login-header text-white text-center p-4">
-          <div className="mb-3 display-5">Welcome Back</div>
-          <div className="small opacity-85">Login to browse stores, track orders and get delivery updates.</div>
-        </div>
+    <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+      <div className="card shadow p-4" style={{ minWidth: 360 }}>
+        <h5 className="text-center mb-1">🛒 Buyer Login</h5>
+        <p className="text-muted text-center small mb-3">Login to browse stores, track orders and get delivery updates.</p>
 
-        <div className="login-body p-4">
-          {err && <div className="alert alert-danger py-2 small">{err}</div>}
-          <form onSubmit={submit}>
-            <div className="mb-3">
-              <label className="form-label">Email address</label>
-              <input
-                className="form-control"
-                type="email"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                placeholder="customer@example.com"
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Password</label>
-              <input
-                className="form-control"
-                type="password"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-                placeholder="••••••••"
-                required
-              />
-            </div>
-            <div className="form-check mb-3">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id="rememberMe"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-              />
-              <label className="form-check-label small text-secondary" htmlFor="rememberMe">
-                Remember me next time
-              </label>
-            </div>
-            <button className="btn btn-danger w-100 mb-3" disabled={loading}>
-              {loading ? 'Logging in…' : 'Login'}
-            </button>
-          </form>
-          <div className="text-center small text-muted">
-            New to DLExpress? <Link to="/register">Create an account</Link>
+        {err && <div className="alert alert-danger py-2 small">{err}</div>}
+
+        <form onSubmit={submit}>
+          <div className="mb-3">
+            <label className="form-label">Email address</label>
+            <input
+              className="form-control"
+              type="email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              placeholder="customer@example.com"
+              required
+            />
           </div>
-        </div>
+          <div className="mb-3">
+            <label className="form-label">Password</label>
+            <input
+              className="form-control"
+              type="password"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              placeholder="••••••••"
+              required
+            />
+          </div>
+          <div className="form-check mb-3">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="rememberMe"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+            />
+            <label className="form-check-label small text-secondary" htmlFor="rememberMe">
+              Remember me next time
+            </label>
+          </div>
+          <button className="btn btn-danger w-100 rounded-pill" disabled={loading}>
+            {loading ? 'Logging in…' : 'Login'}
+          </button>
+        </form>
+
+        <p className="text-center mt-3 small">New to DLExpress? <Link to="/register">Create an account</Link></p>
+        <hr />
+        <small className="text-muted text-center d-block">Seller: :5174 | Admin: :5175</small>
       </div>
     </div>
   )
