@@ -12,9 +12,10 @@ public class AuthService {
     private final UserRepository userRepo;
     private final PasswordEncoder encoder;
     private final JwtUtil jwt;
+    private final NotificationService notif;
 
-    public AuthService(UserRepository userRepo, PasswordEncoder encoder, JwtUtil jwt) {
-        this.userRepo=userRepo; this.encoder=encoder; this.jwt=jwt;
+    public AuthService(UserRepository userRepo, PasswordEncoder encoder, JwtUtil jwt, NotificationService notif) {
+        this.userRepo=userRepo; this.encoder=encoder; this.jwt=jwt; this.notif=notif;
     }
 
     public AuthResponse register(RegisterRequest req) {
@@ -27,7 +28,23 @@ public class AuthService {
         u.setRole(req.getRole()!=null?req.getRole():UserRole.BUYER);
         if (u.getRole() == UserRole.SELLER) u.setActive(false); // requires admin approval
         userRepo.save(u);
+        // Notify all admin users about new registrations
+        notifyAdmins(u);
         return buildResponse(u, jwt.generate(u.getEmail()));
+    }
+
+    private void notifyAdmins(User newUser) {
+        userRepo.findByRole(UserRole.ADMIN).forEach(admin -> {
+                String title, message;
+                if (newUser.getRole() == UserRole.SELLER) {
+                    title = "New Seller Pending Approval";
+                    message = newUser.getFullName() + " (" + newUser.getEmail() + ") registered as a seller and is awaiting approval.";
+                } else {
+                    title = "New Buyer Registered";
+                    message = newUser.getFullName() + " (" + newUser.getEmail() + ") has created a buyer account.";
+                }
+                notif.send(admin.getId(), title, message, "USER_REGISTRATION", newUser.getId());
+            });
     }
 
     public AuthResponse login(LoginRequest req) {

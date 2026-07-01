@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import api from '../api/axios'
 
 export default function UsersPage() {
@@ -6,9 +6,12 @@ export default function UsersPage() {
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState('pending') // 'pending' | 'all'
 
-  useEffect(() => {
+  const fetchUsers = useCallback(() => {
+    setLoading(true)
     api.get('/admin/users').then((r) => setUsers(r.data?.data || [])).finally(() => setLoading(false))
   }, [])
+
+  useEffect(() => { fetchUsers() }, [fetchUsers])
 
   const toggle = async (u) => {
     await api.put(`/admin/users/${u.id}/active?active=${!u.active}`)
@@ -29,7 +32,12 @@ export default function UsersPage() {
 
   return (
     <div>
-      <h4 className="mb-1">User Management</h4>
+      <div className="d-flex align-items-center justify-content-between mb-1">
+        <h4 className="mb-0">User Management</h4>
+        <button className="btn btn-outline-secondary btn-sm" onClick={fetchUsers} disabled={loading}>
+          <i className={`bi bi-arrow-clockwise me-1 ${loading ? 'spin' : ''}`} />Refresh
+        </button>
+      </div>
       <p className="text-muted mb-4">{users.length} total users · {pendingSellers.length} pending seller{pendingSellers.length !== 1 ? 's' : ''}</p>
 
       {/* Tabs */}
