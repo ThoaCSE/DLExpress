@@ -1,0 +1,5 @@
+body { background: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
+.app-bar { background:#dc3545;color:#fff;padding:6px 16px;font-size:0.75rem;text-align:center; }
+.app-bar span { background:rgba(255,255,255,0.25);border-radius:4px;padding:1px 8px;margin:0 4px; }
+.card { border-radius:10px; }
+.btn { border-radius:7px; }
