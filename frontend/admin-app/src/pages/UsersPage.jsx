@@ -4,15 +4,29 @@ import api from '../api/axios'
 export default function UsersPage() {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [tab, setTab] = useState('pending') // 'pending' | 'all'
 
-  useEffect(() => {
-    api.get('/admin/users').then((r) => setUsers(r.data?.data || [])).finally(() => setLoading(false))
-  }, [])
+  const load = () => {
+    setLoading(true)
+    setError('')
+    api.get('/admin/users')
+      .then((r) => {
+        const data = r.data?.data
+        setUsers(Array.isArray(data) ? data : [])
+      })
+      .catch((e) => {
+        const msg = e.response?.data?.message || e.message || 'Failed to load users'
+        setError(msg)
+      })
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(() => { load() }, [])
 
   const toggle = async (u) => {
     await api.put(`/admin/users/${u.id}/active?active=${!u.active}`)
-    setUsers(users.map((x) => x.id === u.id ? { ...x, active: !x.active } : x))
+    setUsers((prev) => prev.map((x) => x.id === u.id ? { ...x, active: !x.active } : x))
   }
 
   const hardDelete = async (u) => {
@@ -24,12 +38,23 @@ export default function UsersPage() {
 
   if (loading) return <div className="text-center py-5"><div className="spinner-border text-dark" /></div>
 
+  if (error) return (
+    <div className="text-center py-5">
+      <i className="bi bi-exclamation-triangle display-5 text-danger d-block mb-3" />
+      <p className="text-danger fw-semibold">{error}</p>
+      <button className="btn btn-dark rounded-pill" onClick={load}><i className="bi bi-arrow-clockwise me-1" />Retry</button>
+    </div>
+  )
+
   const pendingSellers = users.filter((u) => u.role === 'SELLER' && !u.active)
   const allUsers = users
 
   return (
     <div>
-      <h4 className="mb-1">User Management</h4>
+      <div className="d-flex justify-content-between align-items-start mb-1">
+        <h4 className="mb-0">User Management</h4>
+        <button className="btn btn-outline-dark btn-sm" onClick={load}><i className="bi bi-arrow-clockwise me-1" />Refresh</button>
+      </div>
       <p className="text-muted mb-4">{users.length} total users · {pendingSellers.length} pending seller{pendingSellers.length !== 1 ? 's' : ''}</p>
 
       {/* Tabs */}
