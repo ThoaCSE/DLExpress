@@ -37,7 +37,7 @@ public class DataSeeder implements CommandLineRunner {
             buyer.setEmail("buyer@dlexpress.com");
             buyer.setPassword(encoder.encode("Buyer@123"));
             buyer.setRole(UserRole.BUYER);
-            buyer.setActive(true);
+            buyer.setActive(false); // set true after approving from admin panel
             buyer.setPhone("0123456789");
             buyer.setAddress("123 Demo Street, City");
             userRepo.save(buyer);
@@ -51,7 +51,7 @@ public class DataSeeder implements CommandLineRunner {
             u.setEmail("seller@dlexpress.com");
             u.setPassword(encoder.encode("Seller@123"));
             u.setRole(UserRole.SELLER);
-            u.setActive(true);
+            u.setActive(false); // set true after approving from admin panel
             u.setPhone("0987654321");
             u.setAddress("456 Shop Avenue, City");
             User saved = userRepo.save(u);
@@ -65,7 +65,7 @@ public class DataSeeder implements CommandLineRunner {
             store.setName("Demo Store");
             store.setDescription("A pre-approved demo store for screenshots");
             store.setCategory("Food");
-            store.setApproved(true);
+            store.setApproved(false); // set true after approving from admin panel
             store.setImageUrl("https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop");
             storeRepo.save(store);
             System.out.println("[DLExpress] Demo Store seeded for seller@dlexpress.com");
