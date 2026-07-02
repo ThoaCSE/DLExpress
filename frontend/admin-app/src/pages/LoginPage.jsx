@@ -1,16 +1,10 @@
 import React,{useState} from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import axios from 'axios'
-import { getAuth, setAuth } from '../utils/auth'
+import {setAuth} from '../utils/auth'
 export default function LoginPage() {
-  const auth = getAuth()
   const [form,setForm]=useState({email:'',password:''}); const [err,setErr]=useState(''); const [loading,setLoading]=useState(false)
   const nav=useNavigate()
-
-  if (auth?.token && auth.role === 'ADMIN') {
-    return <Navigate to="/" replace />
-  }
-
   const submit=async e=>{
     e.preventDefault(); setLoading(true); setErr('')
     try {

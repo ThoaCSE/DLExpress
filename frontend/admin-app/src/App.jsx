@@ -10,22 +10,12 @@ import OrdersPage from './pages/OrdersPage'
 import DeletionRequestsPage from './pages/DeletionRequestsPage'
 import DbViewerPage from './pages/DbViewerPage'
 
-function Guard({ children }) {
-  const auth = getAuth()
-  if (!auth?.token) return <Navigate to="/login" replace />
-  if (auth.role !== 'ADMIN') return <Navigate to="/login" replace />
-  return children
-}
-
-function PublicRoute({ children }) {
-  const auth = getAuth()
-  return auth?.token && auth.role === 'ADMIN' ? <Navigate to="/" replace /> : children
-}
+function Guard({ children }) { return getAuth() ? children : <Navigate to="/login" /> }
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/" element={<Guard><Layout /></Guard>}>
         <Route index element={<DashboardPage />} />
         <Route path="users" element={<UsersPage />} />
@@ -34,7 +24,7 @@ export default function App() {
         <Route path="deletions" element={<DeletionRequestsPage />} />
         <Route path="db" element={<DbViewerPage />} />
       </Route>
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   )
 }
