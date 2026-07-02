@@ -28,8 +28,3 @@ export default function Topbar({ toggleSidebar }) {
     </nav>
   )
 }
-
-      </div>
-    </nav>
-  )
-}
