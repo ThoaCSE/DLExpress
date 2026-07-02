@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { getAuth } from './utils/auth'
 import Layout from './components/Layout'
@@ -11,21 +11,15 @@ import DeletionRequestsPage from './pages/DeletionRequestsPage'
 import DbViewerPage from './pages/DbViewerPage'
 
 function Guard({ children }) {
-  const [auth, setAuth] = useState(() => getAuth())
-
-  useEffect(() => {
-    const sync = () => setAuth(getAuth())
-    window.addEventListener('dlexpress-auth-changed', sync)
-    return () => window.removeEventListener('dlexpress-auth-changed', sync)
-  }, [])
-
-  if (!auth) return <Navigate to="/login" replace />
+  const auth = getAuth()
+  if (!auth?.token) return <Navigate to="/login" replace />
   if (auth.role !== 'ADMIN') return <Navigate to="/login" replace />
   return children
 }
 
 function PublicRoute({ children }) {
-  return getAuth() ? <Navigate to="/" replace /> : children
+  const auth = getAuth()
+  return auth?.token && auth.role === 'ADMIN' ? <Navigate to="/" replace /> : children
 }
 
 export default function App() {

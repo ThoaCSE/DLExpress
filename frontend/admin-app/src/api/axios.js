@@ -15,13 +15,7 @@ api.interceptors.response.use(
   r => r,
   e => {
     const status = e.response?.status
-    if (status === 401) {
-      logout()
-      window.location.href = '/login'
-    }
-    if (status === 403) {
-      console.error('[Admin] 403 Forbidden – token may be invalid or session expired. Please log in again.')
-    }
+    if (status === 401) logout() // logout() already does window.location.href redirect
     return Promise.reject(e)
   }
 )
